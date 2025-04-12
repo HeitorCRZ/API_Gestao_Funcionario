@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AppStorm</title>
     <link rel="stylesheet" href="../css/login.css">
 </head>
+
 <body>
     <main>
         <div class="container">
@@ -26,9 +28,6 @@
                     <div class="input_box">
                         <input type="password" placeholder="Senha" id="senhatxt" required>
                     </div>
-                    <div class="forget_passoword">
-                        <p>Esqueceu sua senha ? <a href="#">Clique aqui!</a></p>
-                    </div>
 
                     <div>
                         <button id="buttonOK" type="button" class="buttonOK">Entrar</button>
@@ -45,16 +44,16 @@
         const buttonOK = document.getElementById("buttonOK");
         const emailtxt = document.getElementById("emailtxt");
         const senhatxt = document.getElementById("senhatxt");
-        
-        buttonOK.onclick = function() { 
+
+        buttonOK.onclick = function () {
             login();
         };
 
-        function login() { 
+        function login() {
             let email = emailtxt.value;
             let senha = senhatxt.value;
 
-            let jsonEnvio = { 
+            let jsonEnvio = {
                 "email": email,
                 "senha": senha
             };
@@ -71,14 +70,14 @@
                 return response.text();
             }).then((data) => {
                 processarResultados(data)
-                
+
             }).catch((error) => {
-                console.log( error);
+                console.log(error);
             });
 
         }
-        function processarResultados(texto_json) { 
-            respJson = JSON.parse(texto_json)
+        function processarResultados(texto_json) {
+            const respJson = JSON.parse(texto_json);
             try {
                 if (respJson.status == false) {
                     mensage_error.textContent = respJson.error;
@@ -87,18 +86,37 @@
                 } else {
                     mensage_error.style.display = "none";
                     localStorage.setItem("Funcionario", JSON.stringify(respJson));
-                    if (respJson.cargo == "Administração"){
-                        window.location.href = "../html/paginaAdminstrador.html";
-                    }else {
-                        window.location.href = "../html/paginaFuncionario.html";
-                    }
-                }   
+
+                    fetch(`/perfis/buscar/${respJson.id}`, {
+                        method: "GET",
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }).then(response => response.json())
+                        .then(data => {
+                            if (data.status === false) {
+                                window.location.href = "../html/cadastrarPerfil.html";
+                            } else {
+                                if (respJson.cargo === "Administração") {
+                                    window.location.href = "../html/paginaAdminstrador.html";
+                                } else {
+                                    window.location.href = "../html/paginaFuncionario.html";
+                                }
+                            }
+                        }).catch(error => {
+                            console.error("Erro ao buscar perfil:", error);
+                            mensage_error.textContent = "Erro ao verificar o perfil.";
+                            mensage_error.style.display = "block";
+                        });
+                }
             } catch (error) {
                 console.error("Erro ao processar o JSON:", error);
                 mensage_error.textContent = "Erro ao processar a resposta do servidor.";
                 mensage_error.style.display = "block";
-            }    
+            }
         }
+
     </script>
 </body>
+
 </html>

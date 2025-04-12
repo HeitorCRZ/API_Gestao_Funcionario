@@ -9,64 +9,35 @@ const upload = multer({ dest: 'uploads/' });
 
 module.exports = class MiddlewareFuncionario {
 
-  processarCSV = (req, res, next) => {
-    if (!req.file) return next();
-
-    try {
-      const filePath = req.file.path;
-      const ext = path.extname(req.file.originalname).toLowerCase();
-      if (ext !== '.csv') {
-        fs.unlinkSync(filePath);
-        return res.status(400).json({
-          status: false,
-          msg: "O arquivo enviado não é um CSV válido. Envie um arquivo com extensão .csv."
-        });
-      }
-
-      const csvContent = fs.readFileSync(filePath, 'utf8');
-      const registros = parse(csvContent, {
-        columns: true,
-        skip_empty_lines: true,
-        trim: true
-      });
-
-      if (!registros || registros.length === 0) {
-        fs.unlinkSync(filePath);
-        return res.status(400).json({
-          status: false,
-          msg: "O arquivo CSV está vazio ou não contém dados válidos."
-        });
-      }
-
-      const camposObrigatorios = ['nome', 'email', 'cpf', 'senha', 'salario', 'data_contratacao', 'departamento_id', 'cargo'];
-
-      for (let i = 0; i < registros.length; i++) {
-        const linha = registros[i];
-        for (const campo of camposObrigatorios) {
-          if (!linha[campo] || linha[campo].toString().trim() === "") {
-            fs.unlinkSync(filePath);
-            return res.status(400).json({
-              status: false,
-              msg: `O campo obrigatório '${campo}' está ausente ou vazio na linha ${i + 1} do CSV.`
-            });
+  constructor() {
+    this.uploadJSON = [
+      upload.single('arquivo'),
+      async (req, res, next) => {
+        try {
+          if (req.file) {
+            const ext = path.extname(req.file.originalname).toLowerCase();
+            const caminhoCompleto = path.resolve(req.file.path);
+            const conteudo = await fs.promises.readFile(caminhoCompleto, 'utf8');
+            if (ext === '.json') {
+              req.body = JSON.parse(conteudo);
+            } else if (ext === '.csv') {
+              const registros = parse(conteudo, { columns: true, skip_empty_lines: true, trim: true });
+              req.body = { funcionarios: registros };
+            } else
+              return res.status(400).json({ msg: 'Formato de arquivo não suportado (apenas .json ou .csv)' });
           }
+
+          if (!req.body || (!req.body.funcionarios && Object.keys(req.body).length === 0))
+            return res.status(400).json({ msg: 'Nenhum dado de funcionário foi fornecido' });
+
+          next();
+        } catch (err) {
+          console.error(err);
+          return res.status(500).json({ msg: 'Erro ao processar o arquivo ou JSON/CSV', erro: err.message });
         }
       }
-
-      req.body = { funcionarios: registros };
-      fs.unlinkSync(filePath);
-      next();
-    } catch (err) {
-      console.error("Erro ao processar CSV:", err);
-      if (req.file && fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
-      }
-      return res.status(500).json({
-        status: false,
-        msg: "Erro ao processar o arquivo CSV. Verifique se ele está corretamente formatado e contém todos os campos necessários."
-      });
-    }
-  };
+    ];
+  }
 
   validarNome = (req, res, next) => {
     const funcionarios = this.normalizarFuncionarios(req.body);
@@ -202,10 +173,10 @@ module.exports = class MiddlewareFuncionario {
 
   validarCargo = (req, res, next) => {
     const funcionarios = this.normalizarFuncionarios(req.body);
-  
+
     for (let i = 0; i < funcionarios.length; i++) {
       const cargoNome = funcionarios[i].cargo;
-  
+
       if (!cargoNome || typeof cargoNome !== 'string' || !cargoNome.trim()) {
         return res.status(400).json({
           cod: 1,
@@ -213,44 +184,44 @@ module.exports = class MiddlewareFuncionario {
           msg: "O campo 'cargo' é obrigatório e deve ser uma string válida."
         });
       }
-    next();
-  };
+      next();
+    };
   }
 
   validarIdFuncionario = async (req, res, next) => {
 
-      const id = req.params.id;
+    const id = req.params.id;
 
-      if (!id || isNaN(id)) {
-        return res.status(400).json({
-          cod: 1,
+    if (!id || isNaN(id)) {
+      return res.status(400).json({
+        cod: 1,
+        status: false,
+        msg: "O id é obrigatório e deve ser um número válido."
+      });
+    }
+
+    try {
+      const funcionario = new Funcionario();
+
+      const existe = await funcionario.validarId(id);
+
+      if (!existe) {
+        return res.status(404).json({
+          cod: 2,
           status: false,
-          msg: "O id é obrigatório e deve ser um número válido."
+          msg: `O id ${id} de funcionario não existe no banco de dados.`
         });
       }
 
-      try {
-        const funcionario = new Funcionario();
-
-        const existe = await funcionario.validarId(id);
-
-        if (!existe) {
-          return res.status(404).json({
-            cod: 2,
-            status: false,
-            msg: `O id ${id} de funcionario não existe no banco de dados.`
-          });
-        }
-
-        next();
-      } catch (error) {
-        console.error("Erro ao verificar cargo_id:", error);
-        return res.status(500).json({
-          cod: 3,
-          status: false,
-          msg: "Erro interno ao verificar o cargo_id."
-        });
-      }
+      next();
+    } catch (error) {
+      console.error("Erro ao verificar cargo_id:", error);
+      return res.status(500).json({
+        cod: 3,
+        status: false,
+        msg: "Erro interno ao verificar o cargo_id."
+      });
+    }
   }
 
 

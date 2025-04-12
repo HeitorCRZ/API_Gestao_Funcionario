@@ -20,9 +20,8 @@ module.exports = class RouterFuncionario {
             this._controleFuncionario.controle_funcionario_login
         )
 
-        this._router.post('/cadastrarCSV',
-            upload.single('arquivo'),
-            this._middlewareFuncionario.processarCSV,
+        this._router.post('/cadastrarCSV/:id',
+            this._middlewareFuncionario.uploadJSON,
             this._middlewareFuncionario.validarNome,
             this._middlewareFuncionario.validarSenha,
             this._middlewareFuncionario.validarEmail,
@@ -78,6 +77,10 @@ module.exports = class RouterFuncionario {
         this._router.get('/buscarPagina/:id',
             this._controleFuncionario.controle_funcionario_readPage
         ); 
+
+        this._router.get('/relatorio',
+            this._controleFuncionario.controle_funcionario_dadosRelatorio
+        );
         return this._router
 
     }

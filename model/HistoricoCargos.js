@@ -9,58 +9,6 @@ module.exports = class HistoricoCargos {
        this._usuario_logado = null
        this._id = null
     }
-    async post_historicoCargo() {
-        const conexao = Banco.getConexao();
-    
-        const sqlInsert = `
-            INSERT INTO historico_cargos 
-            (funcionario_id, cargo_anterior, novo_cargo, data_alteracao) 
-            VALUES (?, ?, ?, now())
-        `;
-    
-        const sqlLog = `
-            INSERT INTO log_auditoria 
-            (tabela_afetada, id_registro_afetado, campo_modificado, valor_novo, acao, usuario_responsavel)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-    
-        try {
-            console.log("Dados para histórico:");
-            console.log({
-                funcionario_id: this._funcionario_id,
-                cargo_anterior: this._cargo_anterior,
-                novo_cargo: this._novo_cargo
-            });
-    
-            const [result] = await conexao.promise().execute(sqlInsert, [
-                this._funcionario_id ?? null,
-                this._cargo_anterior ?? null,
-                this._novo_cargo ?? null
-            ]);
-    
-            const novoId = result.insertId;
-            const usuario = this._usuario_logado;
-    
-            const logs = [
-                ['historico_cargo', novoId, 'funcionario_id', String(this._funcionario_id), 'INSERT', usuario],
-                ['historico_cargo', novoId, 'cargo_anterior', this._cargo_anterior, 'INSERT', usuario],
-                ['historico_cargo', novoId, 'novo_cargo', this._novo_cargo, 'INSERT', usuario]
-            ];
-    
-            console.log("Logs para auditoria:");
-            console.log(logs);
-    
-            for (const log of logs) {
-                await conexao.promise().execute(sqlLog, log);
-            }
-    
-            return result.affectedRows > 0;
-    
-        } catch (error) {
-            console.log("Erro ao inserir histórico de promoção:", error);
-            return false;
-        }
-    }
     
     async get_historicoCargos() {
         const conexao = Banco.getConexao();

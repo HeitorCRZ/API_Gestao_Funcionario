@@ -7,67 +7,49 @@ module.exports = class ControlDepartamento {
 
     async controle_csv_departamento(request, response) {
         try {
-            const file = request.file;
-
-            if (!file || !file.path) {
-                return response.status(400).json({ error: 'Arquivo CSV não encontrado!' });
+            const lista = request.body.departamentos;
+            if (!Array.isArray(lista)) {
+                return response.status(400).json({ msg: 'Dados de departamentos inválidos' });
             }
 
-            const ponteiroArquivo = fs.createReadStream(file.path);
-            const leitorLinha = readline.createInterface({
-                input: ponteiroArquivo,
-                crlfDelay: Infinity,
-            });
-
-            let i = 0;
             const departamentosCriados = [];
-            let qtdDepartamentosDuplicados = 0;
             const departamentosDuplicados = [];
-
-            for await (const linhaArquivo of leitorLinha) {
-                const campos = linhaArquivo.split(';');
-
+            const usuario_logado = request.params.id;
+            for (const dados of lista) {
                 const departamento = new Departamento();
-                departamento.nome = campos[0];
-                departamento.orcamento = campos[1];
-                departamento.localizacao = campos[2];
-                departamento.data_criacao = campos[3];
-               
-                const existeDepartamento = await departamento.verificarDepartamento(); // Verifica se já existe
-                if (!existeDepartamento) {
-                    const departamentoCriado = await departamento.post_departamento();
-                    if (departamentoCriado) {
-                        departamentosCriados.push(departamento);
-                        i++;
-                    }
+                departamento._usuario_logado = usuario_logado;
+                departamento.nome = dados.nome;
+                departamento.orcamento = dados.orcamento;
+                departamento.localizacao = dados.localizacao;
+                departamento.data_criacao = dados.data_criacao;
+
+                const existe = await departamento.verificarDepartamento();
+
+                if (!existe) {
+                    const criado = await departamento.post_departamento();
+                    if (criado) departamentosCriados.push(departamento);
                 } else {
-                    qtdDepartamentosDuplicados++;
-                    departamentosDuplicados.push(funcionario.nome);
+                    departamentosDuplicados.push(dados.nome);
                 }
             }
 
-            console.log('Departamentos processados:', departamentosCriados);
-            console.log('Quantidade de Departamentos duplicados:', qtdDepartamentosDuplicados);
-            console.log('Departamentos duplicados:', departamentosDuplicados);
-
             return response.status(200).json({
-                message: 'Arquivo processado com sucesso!',
+                message: 'Departamentos processados com sucesso!',
                 processados: departamentosCriados.length,
-                duplicados: qtdDepartamentosDuplicados,
+                duplicados: departamentosDuplicados.length,
+                nomes_duplicados: departamentosDuplicados
             });
 
         } catch (error) {
-            console.error("Erro ao processar CSV de Departamentos:", error);
+            console.error("Erro ao processar CSV:", error);
             return response.status(500).json({ error: 'Erro interno do servidor!' });
         }
     }
 
 
     async controle_departamento_cadastrar(req, res) {
-        console.log("Cep -> " + req.body.localizacao);
         let cep = req.body.localizacao;
         cep = cep.replace(/\D/g, ''); // remove tudo que não for número
-        console.log("CEP normalizado2 ---> " + cep);
         const resposta = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
 
         const endereco = resposta.data;

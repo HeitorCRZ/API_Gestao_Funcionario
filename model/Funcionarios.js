@@ -321,6 +321,7 @@ module.exports = class Funcionario {
                 const funcionario = result[0];
                 this._nome = funcionario.nome;
                 this._cargo = funcionario.cargo;
+                this._id_funcionario = funcionario.id;
                 return true;
             }
             return false;
@@ -348,7 +349,108 @@ module.exports = class Funcionario {
         }
     }
 
-
+    async mediaSalarialGeral() {
+        const conexao = Banco.getConexao();
+        const sql = `
+            SELECT AVG(salario) AS media_salarial
+            FROM funcionarios
+        `;
+   
+        try {
+            const [result] = await conexao.promise().execute(sql);
+            return result.length > 0 ? result[0].media_salarial : null;
+        } catch (error) {
+            console.log("Erro ao calcular média salarial geral:", error);
+            return null;
+        }
+    }
+    async totalFuncionariosAtivos() {
+        const conexao = Banco.getConexao();
+        const sql = `
+            SELECT COUNT(*) AS total
+            FROM funcionarios
+        `;
+        try {
+            const [result] = await conexao.promise().execute(sql);
+            return result[0].total;
+        } catch (error) {
+            console.log("Erro ao contar funcionários ativos:", error);
+            return null;
+        }
+    }
+    async funcionariosPorCargo() {
+        const conexao = Banco.getConexao();
+        const sql = `
+            SELECT cargo, COUNT(*) AS total
+            FROM funcionarios
+            GROUP BY cargo
+        `;
+        try {
+            const [result] = await conexao.promise().execute(sql);
+            return result;
+        } catch (error) {
+            console.log("Erro ao obter funcionários por cargo:", error);
+            return [];
+        }
+    }
+    async proporcaoGenero() {
+        const conexao = Banco.getConexao();
+        const sql = `
+            SELECT genero, COUNT(*) AS total
+            FROM perfis
+            WHERE genero IN ('masculino', 'feminino')
+            GROUP BY genero
+        `;
+        try {
+            const [result] = await conexao.promise().execute(sql);
+            return result;
+        } catch (error) {
+            console.log("Erro ao calcular proporção de gênero:", error);
+            return [];
+        }
+    }
+    async distribuicaoSalarialPorDepartamento() {
+        const conexao = Banco.getConexao();
+        const sql = `
+            SELECT 
+                d.nome AS departamento,
+                COUNT(f.id) AS total_funcionarios,
+                AVG(f.salario) AS media_salarial,
+                SUM(f.salario) AS total_salarial
+            FROM funcionarios f
+            JOIN departamentos d ON f.departamento_id = d.id
+            GROUP BY d.nome
+        `;
+        try {
+            const [result] = await conexao.promise().execute(sql);
+            return result;
+        } catch (error) {
+            console.log("Erro ao obter distribuição salarial por departamento:", error);
+            return [];
+        }
+    }
+    async idadeMediaPorDepartamento() {
+        const conexao = Banco.getConexao();
+        const sql = `
+            SELECT 
+                d.nome AS departamento,
+                AVG(p.idade) AS idade_media,
+                COUNT(f.id) AS total_funcionarios
+            FROM funcionarios f
+            JOIN perfis p ON f.id = p.funcionario_id
+            JOIN departamentos d ON f.departamento_id = d.id
+            GROUP BY d.nome
+        `;
+        try {
+            const [result] = await conexao.promise().execute(sql);
+            return result;
+        } catch (error) {
+            console.log("Erro ao calcular idade média por departamento:", error);
+            return [];
+        }
+    }
+    
+    
 
 
     async verificarDepartamento() {

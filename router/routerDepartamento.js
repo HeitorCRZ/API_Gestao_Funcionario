@@ -12,11 +12,8 @@ module.exports = class RouterDepartamento {
 
     criarRotasDepartamento() {
 
-        const multer = require('multer');
-        const upload = multer({ dest: 'uploads/' });
-
-        this._router.post('/cadastrarCSV',   
-            this._middlewareDepartamento.processarCSV, 
+        this._router.post('/cadastrarCSV/:id',   
+            this._middlewareDepartamento.uploadJSON, 
             this._middlewareDepartamento.verificarDepartamentoCadastrado,     
             this._middlewareDepartamento.validarNome,                       
             this._middlewareDepartamento.validarOrcamento,                   

@@ -13,12 +13,11 @@ module.exports = class Departamento {
   async post_departamento() {
     const conexao = Banco.getConexao();
     const sql = "INSERT INTO departamentos (nome, orcamento, localizacao, data_criacao) VALUES (?, ?, ?, ?)";
-
+    console.log("Dado ---> "+this.nome);
     try {
       const [result] = await conexao.promise().execute(sql, [this.nome, this.orcamento, this.localizacao, this.data_criacao]);
       this._idUFuncionario = result.insertId;
 
-      // Auditoria: log de inserção
       const sqlLog = `
               INSERT INTO log_auditoria 
               (tabela_afetada, id_registro_afetado, campo_modificado, valor_novo, acao, usuario_responsavel)
@@ -50,6 +49,7 @@ module.exports = class Departamento {
   async verificarDepartamento() {
     const conexao = Banco.getConexao()
     const sql = "select * from departamentos where nome = ?"
+    console.log("Dado ---> "+this.nome);
     try {
       const [result] = await conexao.promise().execute(sql, [this._nome])
       console.log(result)

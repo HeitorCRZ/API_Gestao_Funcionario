@@ -2,28 +2,6 @@ const express = require('express');
 const HistoricoCargo = require("../model/HistoricoCargos");
 
 module.exports = class ControlHistoricoCargo {
-  
-    async controle_historicoCargo_Cadastrar(req, res) {
-        const cargo_anterior = req.body.cargo_anterior;
-        const novo_cargo = req.body.novo_cargo;
-        const funcionario_id = req.body.funcionario_id;
-        const usuario_logado = req.body.usuario_logado;
-        
-        const historico_cargo = new HistoricoCargo();
-        historico_cargo._cargo_anterior = cargo_anterior;
-        historico_cargo._novo_cargo = novo_cargo;
-        historico_cargo._funcionario_id = funcionario_id;
-        historico_cargo._usuario_logado = usuario_logado;
-
-        const resultado = await historico_cargo.post_historicoCargo();
-
-        const objResposta = {
-            cod: 1,
-            status: resultado,
-            msg: resultado ? 'Historico de cargos atualizado' : 'Historico de cargos não foi inserido'
-        };
-        res.status(200).send(objResposta);
-    }
     async controle_historicoCargo_Buscar(req, res) {
         const id = req.params.id;
 

@@ -1,9 +1,60 @@
 const Departamento = require("../model/Departamentos");
 const express = require('express');
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+const { parse } = require('csv-parse/sync');
+const multer = require('multer');
+
+const upload = multer({ dest: 'uploads/' });
 
 module.exports = class MiddlewareDepartamento {
 
+
+  constructor() {
+    this.uploadJSON = [
+      upload.single('arquivo'),
+      async (req, res, next) => {
+        try {
+          if (req.file) {
+            const ext = path.extname(req.file.originalname).toLowerCase();
+            const caminhoCompleto = path.resolve(req.file.path);
+            const conteudo = await fs.promises.readFile(caminhoCompleto, 'utf8');
+
+            if (ext === '.json') {
+              const dadosJson = JSON.parse(conteudo);
+              req.body = {
+                departamentos: Array.isArray(dadosJson)
+                  ? dadosJson
+                  : dadosJson.departamentos
+              };
+            } else if (ext === '.csv') {
+              const registros = parse(conteudo, {
+                columns: true,
+                skip_empty_lines: true,
+                trim: true,
+                delimiter: ';' // IMPORTANTE!
+              });
+              req.body = { departamentos: registros };
+            } else {
+              return res.status(400).json({ msg: 'Formato de arquivo não suportado (apenas .json ou .csv)' });
+            }
+          }
+
+          if (!req.body || !req.body.departamentos || !Array.isArray(req.body.departamentos)) {
+            return res.status(400).json({ msg: 'Nenhum dado de Departamento foi fornecido' });
+          }
+
+          console.log("Dados recebidos:", req.body.departamentos);
+          next();
+
+        } catch (err) {
+          console.error(err);
+          return res.status(500).json({ msg: 'Erro ao processar o arquivo ou JSON/CSV', erro: err.message });
+        }
+      }
+    ];
+  }
   normalizarDepartamentos = (body) => {
     if (Array.isArray(body.departamentos)) {
       return body.departamentos;

@@ -37,6 +37,7 @@ module.exports = class ControlFuncionario {
                 token: novoToken,
                 Funcionario: objFuncionario.nome,
                 cargo: objFuncionario.cargo,
+                id: objFuncionario.id_funcionario,
                 status: true
             };
 
@@ -51,73 +52,48 @@ module.exports = class ControlFuncionario {
 
     async controle_csv_funcionario(request, response) {
         try {
-            const file = request.file;
-
-
-            if (!file || !file.path) {
-                return response.status(400).json({ error: 'Arquivo CSV não encontrado!' });
+          const lista = request.body.funcionarios;
+          if (!Array.isArray(lista)) {
+            return response.status(400).json({ msg: 'Dados de funcionários inválidos' });
+          }
+    
+          const funcionariosCriados = [];
+          const funcionariosDuplicados = [];
+          const usuario_logado = request.params.id;
+          for (const dados of lista) {
+            const funcionario = new Funcionario();
+            funcionario._usuario_logado = usuario_logado;
+            funcionario.nome = dados.nome;
+            funcionario.email = dados.email;
+            funcionario.senha = dados.senha;
+            funcionario.cpf = dados.cpf;
+            funcionario.cargo = dados.cargo;
+            funcionario.salario = dados.salario;
+            funcionario.data_contratacao = dados.data_contratacao;
+            funcionario.departamento_id = dados.departamento_id;
+    
+            const existe = await funcionario.verificarEmail();
+    
+            if (!existe) {
+              const criado = await funcionario.post_funcionario();
+              if (criado) funcionariosCriados.push(funcionario);
+            } else {
+              funcionariosDuplicados.push(dados.nome || dados.email);
             }
-
-
-            const ponteiroArquivo = fs.createReadStream(file.path);
-            const leitorLinha = readline.createInterface({
-                input: ponteiroArquivo,
-                crlfDelay: Infinity,
-            });
-
-
-            let i = 0;
-            const funcionariosCriados = [];
-            let qtdFuncionariosDuplicados = 0;
-            const funcionariosDuplicados = [];
-
-
-            for await (const linhaArquivo of leitorLinha) {
-                const campos = linhaArquivo.split(';');
-
-
-                const funcionario = new Funcionario();
-                funcionario.nome = campos[0];
-                funcionario.email = campos[1];
-                funcionario.cpf = campos[2];
-                funcionario.senha = campos[3];
-                funcionario.salario = campos[4];
-                funcionario.data_contratacao = campos[5];
-                funcionario.departamento_id = campos[6];
-                funcionario.cargo_id = campos[7];
-
-
-                const existeFuncionario = await funcionario.get_Funcionario(); // Verifica se já existe
-                if (!existeFuncionario) {
-                    const Funcionariocriado = await funcionario.post_funcionario();
-                    if (Funcionariocriado) {
-                        funcionariosCriados.push(funcionario);
-                        i++;
-                    }
-                } else {
-                    qtdFuncionariosDuplicados++;
-                    funcionariosDuplicados.push(funcionario.nome);
-                }
-            }
-
-
-            console.log('Funcionários processados:', funcionariosCriados);
-            console.log('Quantidade de Funcionários duplicados:', qtdFuncionariosDuplicados);
-            console.log('Funcionários duplicados:', funcionariosDuplicados);
-
-
-            return response.status(200).json({
-                message: 'Arquivo processado com sucesso!',
-                processados: funcionariosCriados.length,
-                duplicados: qtdFuncionariosDuplicados,
-            });
-
-
+          }
+    
+          return response.status(200).json({
+            message: 'Funcionários processados com sucesso!',
+            processados: funcionariosCriados.length,
+            duplicados: funcionariosDuplicados.length,
+            nomes_duplicados: funcionariosDuplicados
+          });
+    
         } catch (error) {
-            console.error("Erro ao processar CSV de funcionários:", error);
-            return response.status(500).json({ error: 'Erro interno do servidor!' });
+          console.error("Erro ao processar CSV:", error);
+          return response.status(500).json({ error: 'Erro interno do servidor!' });
         }
-    }
+      }
 
 
     async controle_funcionario_cadastrar(req, res) {
@@ -155,13 +131,50 @@ module.exports = class ControlFuncionario {
         res.status(200).send(objResposta);
     }
 
+    async controle_funcionario_dadosRelatorio(req, res) {
+        try {
+            const funcionario = new Funcionario();
+    
+            const totalFuncionarios = await funcionario.totalFuncionariosAtivos();
+            const funcionariosCargo = await funcionario.funcionariosPorCargo();
+            const proporcaoGenero = await funcionario.proporcaoGenero();
+            const mediaSalarial = await funcionario.mediaSalarialGeral();
+            const distribuicaoSalarial = await funcionario.distribuicaoSalarialPorDepartamento();
+            const idadePorDepartamento = await funcionario.idadeMediaPorDepartamento();
+    
+            const objResposta = {
+                cod: 7,
+                status: true,
+                relatorio: {
+                    total_funcionarios: totalFuncionarios,
+                    funcionarios_por_cargo: funcionariosCargo,
+                    proporcao_genero: proporcaoGenero,
+                    media_salarial_geral: mediaSalarial,
+                    distribuicao_salarial_departamento: distribuicaoSalarial,
+                    idade_media_departamento: idadePorDepartamento
+                },
+                msg: "Relatório estatístico de funcionários gerado com sucesso."
+            };
+    
+            res.status(200).send(objResposta);
+        } catch (error) {
+            console.error("Erro ao gerar relatório:", error);
+            res.status(500).send({
+                cod: 0,
+                status: false,
+                msg: "Erro ao gerar relatório de funcionários."
+            });
+        }
+    }
+    
+    
 
     async controle_funcionario_atualizar(req, res) {
         const id = req.params.id;
         const nome = req.body.nome;
         const email = req.body.email;
         const cpf = req.body.cpf;
-        const cargo = req.body.cargo_id;
+        const cargo = req.body.cargo;
         const salario = req.body.salario;
         const data_contratacao = req.body.data_contratacao;
         const departamento_id = req.body.departamento_id;
@@ -173,7 +186,7 @@ module.exports = class ControlFuncionario {
         funcionario.nome = nome;
         funcionario.email = email;
         funcionario.cpf = cpf;
-        funcionario.cargo_id = cargo;
+        funcionario.cargo = cargo;
         funcionario.salario = salario;
         funcionario.data_contratacao = data_contratacao;
         funcionario.departamento_id = departamento_id;
