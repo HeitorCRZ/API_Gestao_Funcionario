@@ -1,0 +1,82 @@
+CREATE DATABASE Sistema_Gerenciamento_Funcionarios;
+USE Sistema_Gerenciamento_Funcionarios;
+
+CREATE TABLE departamentos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100),
+  orcamento DECIMAL(15,2),
+  localizacao VARCHAR(100),
+  data_criacao DATE
+);
+
+CREATE TABLE funcionarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100),
+  email VARCHAR(100),
+  cpf VARCHAR(14),
+  senha VARCHAR(255),
+  salario DECIMAL(15,2),
+  data_contratacao DATE,
+  departamento_id INT,
+  cargo VARCHAR(50),
+  FOREIGN KEY (departamento_id) REFERENCES departamentos(id) ON DELETE SET NULL
+);
+
+CREATE TABLE perfis (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  funcionario_id INT UNIQUE,
+  idade INT,
+  endereco VARCHAR(255),
+  telefone VARCHAR(20),
+  genero ENUM('Masculino', 'Feminino', 'Outro'),
+  estado_civil ENUM('Solteiro', 'Casado', 'Divorciado', 'Viúvo'),
+  imagem VARCHAR(55),
+  FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE historico_cargos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  funcionario_id INT,
+  cargo_anterior VARCHAR(50),
+  novo_cargo VARCHAR(50),
+  data_alteracao DATE,
+  FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id)
+);
+
+CREATE TABLE supervisores (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  supervisor_id INT,
+  supervisionado_id INT UNIQUE,
+  FOREIGN KEY (supervisor_id) REFERENCES funcionarios(id),
+  FOREIGN KEY (supervisionado_id) REFERENCES funcionarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE log_auditoria (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  tabela_afetada VARCHAR(100),
+  id_registro_afetado INT,
+  campo_modificado VARCHAR(100),
+  valor_antigo TEXT,
+  valor_novo TEXT,
+  acao VARCHAR(10), -- INSERT, UPDATE, DELETE
+  usuario_responsavel INT NOT NULL,
+  data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (usuario_responsavel) REFERENCES funcionarios(id)
+);
+
+DELIMITER //
+
+CREATE TRIGGER trg_registrar_historico_cargo
+AFTER UPDATE ON funcionarios
+FOR EACH ROW
+BEGIN
+  IF NEW.cargo <> OLD.cargo THEN
+    INSERT INTO historico_cargos (funcionario_id, cargo_anterior, novo_cargo, data_alteracao)
+    VALUES (OLD.id, OLD.cargo, NEW.cargo, CURDATE());
+  END IF;
+END;
+//
+
+DELIMITER ;
+
+

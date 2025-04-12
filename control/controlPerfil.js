@@ -15,6 +15,7 @@ module.exports = class ControlPerfil {
             const enderecoCompleto = `${endereco.logradouro}, ${endereco.bairro}, ${endereco.localidade} - ${endereco.uf}, CEP: ${endereco.cep}`;
     
             const perfil = new Perfil();
+            perfil.imagem = req.file.filename;
             perfil.idade = req.body.idade;
             perfil.telefone = req.body.telefone;
             perfil.endereco = enderecoCompleto;

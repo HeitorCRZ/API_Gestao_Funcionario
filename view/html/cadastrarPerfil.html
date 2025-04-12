@@ -1,28 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AppStorm</title>
-    <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="../css/cadastrarPerfil.css" />
 </head>
+
 <body>
     <main>
         <div class="container">
             <div class="header">
                 <div class="logo">
-                    <img src="./appstorm_logo.jpeg">
+                    <img src="./appstorm_logo.jpeg" alt="Logo AppStorm" />
                 </div>
                 <h2>Monte seu perfil</h2>
                 <h2>AppStorm</h2>
             </div>
 
-           
+            <form class="form-group">
+                <div class="form-floating">
+                    <label for="cep">CEP</label>
+                    <input type="text" class="form-control" id="cep" placeholder="00000-000" />
+                </div>
+
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <label for="idade">Idade</label>
+                            <input type="number" class="form-control" id="idade" placeholder="ex: 28" />
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <label for="estado_civil">Estado civil</label>
+                            <select class="form-select" id="estado_civil">
+                                <option selected>Selecione o seu Estado civil</option>
+                                <option value="Solteiro">Solteiro</option>
+                                <option value="Casado">Casado</option>
+                                <option value="Viúvo">Viúvo</option>
+                                <option value="Divorciado">Divorciado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <label for="telefone">Telefone</label>
+                            <input type="tel" class="form-control" id="telefone" placeholder="1299204-3112" />
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <label for="genero">Gênero</label>
+                            <select class="form-select" id="genero">
+                                <option selected>Selecione o seu Gênero</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Feminino">Feminino</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="inputGroupFile01">Foto de perfil</label>
+                    <input type="file" class="form-control" id="inputGroupFile01" name="arquivo" />
+                    <button type="button" id="btnEnviar" class="btn-enviar">Enviar</button>
+                </div>
+            </form>
         </div>
     </main>
-
-    <script>
-       
-    </script>
 </body>
+<script>
+    document.getElementById('btnEnviar').addEventListener('click', async function () {
+        const cep = document.getElementById('cep').value;
+        const idade = document.getElementById('idade').value;
+        const estado_civil = document.getElementById('estado_civil').value;
+        const telefone = document.getElementById('telefone').value;
+        const genero = document.getElementById('genero').value;
+        const foto = document.getElementById('inputGroupFile01').files[0];
+        const funcionarioData = JSON.parse(localStorage.getItem("Funcionario"));
+        const usuario_logado = funcionarioData?.id;
+
+        if (!foto) {
+            alert('Por favor, envie uma foto de perfil.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('arquivo', foto);
+        formData.append('endereco', cep);
+        formData.append('idade', idade);
+        formData.append('estado_civil', estado_civil);
+        formData.append('telefone', telefone);
+        formData.append('genero', genero);
+        formData.append('usuario_logado', usuario_logado);
+
+        try {
+            const response = await fetch('/perfis/cadastrar', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('Perfil cadastrado com sucesso!');
+                window.location.href = "../html/paginaFuncionario.html";
+                const idUsuario = {
+                    id: usuario_logado,
+                };
+
+                localStorage.setItem("usuario", JSON.stringify(usuario));
+
+            } else {
+                alert(result.erro || 'Erro ao cadastrar perfil.');
+            }
+        } catch (error) {
+            alert('Erro de conexão com o servidor.');
+            console.error(error);
+        }
+    });
+</script>
+
 </html>

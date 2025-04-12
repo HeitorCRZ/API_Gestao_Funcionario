@@ -4,10 +4,16 @@ const axios = require('axios');
 
 module.exports = class MiddlewarePerfil {
 
+    verificarFoto(req, res, next) {
+        if (!req.file) {
+            return res.status(400).json({ erro: 'Nenhuma foto foi enviada.' });
+        }
+        next();
+    }
 
     validarIdPerfil = async (req, res, next) => {
         const id = req.params.id;
-
+    
         if (!id || isNaN(id)) {
             return res.status(400).json({
                 cod: 1,
@@ -43,7 +49,7 @@ module.exports = class MiddlewarePerfil {
         try {
             let cep = req.body.endereco;
             cep = cep.replace(/\D/g, ''); // remove tudo que não for número
-
+        
             const resposta = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
 
             if (resposta.data.erro) {
@@ -65,8 +71,9 @@ module.exports = class MiddlewarePerfil {
     }
 
     validarIdade = (req, res, next) => {
+        
         const idade = req.body.idade;
-    
+
         if (
             idade === undefined ||
             idade === null ||
@@ -81,27 +88,34 @@ module.exports = class MiddlewarePerfil {
                 msg: 'A idade do Perfil é inválida. Deve ser um número entre 15 e 80.',
             });
         }
-    
+
         next();
     };
-    
+
 
 
     validarTelefone = (req, res, next) => {
-
-        const telefone = req.body.telefone;
+     
+    
+        // Remove todos os caracteres que não são números
+        const telefone = req.body.telefone ? req.body.telefone.replace(/\D/g, '') : '';
+    
         if (!telefone || !/^\d{10,11}$/.test(telefone)) {
             return res.status(400).json({
                 cod: 2,
                 status: false,
                 msg: `O telefone é inválido. Deve conter apenas números e ter entre 10 e 11 dígitos.`,
             });
-
         }
+    
+        // Se quiser, pode salvar o telefone limpo de volta no req.body:
+        req.body.telefone = telefone;
+    
         next();
     }
+    
     verificarPerfilExiste = async (req, res, next) => {
-
+       
         const id = req.params.usuario_logado;
         const perfil = new Perfil();
         perfil.usuario_logado = id;

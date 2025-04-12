@@ -1,0 +1,116 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header img {
+    width: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.col-md {
+    flex: 1;
+    min-width: 45%;
+}
+
+.form-floating {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-floating input,
+.form-floating select {
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.form-floating label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-group {
+    margin-top: 20px;
+}
+
+.input-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    padding: 10px;
+}
+
+@media (max-width: 600px) {
+    .row {
+        flex-direction: column;
+    }
+
+    .col-md {
+        min-width: 100%;
+    }
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-enviar {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-enviar:hover {
+    background-color: #0056b3;
+}

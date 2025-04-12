@@ -94,15 +94,16 @@
                         }
                     }).then(response => response.json())
                         .then(data => {
-                            if (data.status === false) {
-                                window.location.href = "../html/cadastrarPerfil.html";
+                            if (respJson.cargo === "Administração") {
+                                window.location.href = "../html/paginaAdminstrador.html";
                             } else {
-                                if (respJson.cargo === "Administração") {
-                                    window.location.href = "../html/paginaAdminstrador.html";
+                                if (data.status === false) {
+                                    window.location.href = "../html/cadastrarPerfil.html";
                                 } else {
                                     window.location.href = "../html/paginaFuncionario.html";
                                 }
                             }
+
                         }).catch(error => {
                             console.error("Erro ao buscar perfil:", error);
                             mensage_error.textContent = "Erro ao verificar o perfil.";

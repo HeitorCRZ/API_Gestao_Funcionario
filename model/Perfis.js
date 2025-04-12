@@ -1,7 +1,6 @@
-const Banco = require("./Banco")
+const Banco = require("./Banco");
 
 module.exports = class Perfis {
-
     constructor() {
         this._id = null;
         this._idade = null;
@@ -9,38 +8,46 @@ module.exports = class Perfis {
         this._telefone = "";
         this._genero = "";
         this._estado_civil = "";
-        this.usuario_logado = "";
+        this._usuario_logado = "";
+        this._imagem = "";
     }
 
     async post_perfil() {
         const conexao = Banco.getConexao();
-        const sql = "INSERT INTO perfis (funcionario_id, idade, endereco, telefone, genero, estado_civil) VALUES (?, ?, ?, ?, ?, ?)";
+        const sql = "INSERT INTO perfis (funcionario_id, idade, endereco, telefone, genero, estado_civil, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            const [result] = await conexao.promise().execute(sql, [this.usuario_logado, this.idade, this.endereco, this.telefone, this.genero, this.estado_civil]);
+            const [result] = await conexao.promise().execute(sql, [
+                this.usuario_logado,
+                this.idade,
+                this.endereco,
+                this.telefone,
+                this.genero,
+                this.estado_civil,
+                this.imagem
+            ]);
+
             this._id = result.insertId;
 
             const sqlLog = `
-        INSERT INTO log_auditoria 
-        (tabela_afetada, id_registro_afetado, campo_modificado, valor_novo, acao, usuario_responsavel)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `;
+                INSERT INTO log_auditoria 
+                (tabela_afetada, id_registro_afetado, campo_modificado, valor_novo, acao, usuario_responsavel)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `;
 
             const usuario = this.usuario_logado;
-            const id = this._id;
 
             const logs = [
-                ['perfis',  usuario, 'idade', String(this.idade), 'INSERT', usuario],
-                ['perfis',  usuario, 'endereco', this.endereco, 'INSERT', usuario],
-                ['perfis',  usuario, 'telefone', this.telefone, 'INSERT', usuario],
-                ['perfis',  usuario, 'genero', this.genero, 'INSERT', usuario],
-                ['perfis',  usuario, 'estado_civil', this.estado_civil, 'INSERT', usuario]
+                ['perfis', usuario, 'idade', String(this.idade), 'INSERT', usuario],
+                ['perfis', usuario, 'endereco', this.endereco, 'INSERT', usuario],
+                ['perfis', usuario, 'telefone', this.telefone, 'INSERT', usuario],
+                ['perfis', usuario, 'genero', this.genero, 'INSERT', usuario],
+                ['perfis', usuario, 'estado_civil', this.estado_civil, 'INSERT', usuario],
+                ['perfis', usuario, 'imagem', this.imagem, 'INSERT', usuario]
             ];
 
             for (const log of logs) {
-                if (log[3] !== log[4]) {
-                    await conexao.promise().execute(sqlLog, log);
-                }
+                await conexao.promise().execute(sqlLog, log);
             }
 
             return result.affectedRows > 0;
@@ -56,12 +63,7 @@ module.exports = class Perfis {
 
         try {
             const [result] = await conexao.promise().execute(sql, [this.funcionario_id]);
-
-            if (result.length === 1) {
-                return result;
-            }
-
-            return false;
+            return result.length === 1 ? result : false;
         } catch (error) {
             console.log("Erro ao buscar perfil por ID >>>", error);
             return false;
@@ -70,13 +72,10 @@ module.exports = class Perfis {
 
     async put_perfil() {
         const conexao = Banco.getConexao();
-
         const perfilAtual = await this.validarId(this.usuario_logado);
-        if (!perfilAtual) {
-            return false;
-        }
+        if (!perfilAtual) return false;
 
-        this._id = perfilAtual.id; // Corrige o ID do perfil atual
+        this._id = perfilAtual.id;
         const atual = perfilAtual;
 
         const sql = `
@@ -92,22 +91,23 @@ module.exports = class Perfis {
                 this.telefone,
                 this.genero,
                 this.estado_civil,
-                this._id // Corrigido: ID correto do perfil
+                this._id
             ]);
 
-            const usuario = this.usuario_logado;
             const sqlLog = `
                 INSERT INTO log_auditoria 
                 (tabela_afetada, id_registro_afetado, campo_modificado, valor_novo, valor_antigo, acao, usuario_responsavel)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             `;
 
+            const usuario = this.usuario_logado;
+
             const logs = [
-                ['perfis',  usuario, 'idade', String(this.idade), String(atual.idade), 'UPDATE', usuario],
-                ['perfis',  usuario, 'endereco', this.endereco, String(atual.endereco), 'UPDATE', usuario],
-                ['perfis',  usuario, 'telefone', this.telefone, String(atual.telefone), 'UPDATE', usuario],
-                ['perfis',  usuario, 'genero', this.genero, String(atual.genero), 'UPDATE', usuario],
-                ['perfis',  usuario, 'estado_civil', this.estado_civil, String(atual.estado_civil), 'UPDATE', usuario]
+                ['perfis', usuario, 'idade', String(this.idade), String(atual.idade), 'UPDATE', usuario],
+                ['perfis', usuario, 'endereco', this.endereco, String(atual.endereco), 'UPDATE', usuario],
+                ['perfis', usuario, 'telefone', this.telefone, String(atual.telefone), 'UPDATE', usuario],
+                ['perfis', usuario, 'genero', this.genero, String(atual.genero), 'UPDATE', usuario],
+                ['perfis', usuario, 'estado_civil', this.estado_civil, String(atual.estado_civil), 'UPDATE', usuario]
             ];
 
             for (const log of logs) {
@@ -123,45 +123,45 @@ module.exports = class Perfis {
         }
     }
 
-
     async validarId(id) {
         const conexao = Banco.getConexao();
-    
         try {
             const [rows] = await conexao.promise().execute(
                 "SELECT * FROM perfis WHERE funcionario_id = ?",
                 [id]
             );
-    
-            if (!rows || rows.length === 0) {
-                console.warn(`Nenhum perfil encontrado para o funcionário com ID: ${id}`);
-                return false;
-            }
-    
-            return rows[0]; // retorna o perfil completo
+            return rows.length > 0 ? rows[0] : false;
         } catch (error) {
             console.error("Erro ao validar ID do perfil:", error);
             return false;
         }
     }
-    
 
     async get_perfil_by_usuario_logado() {
+        const conexao = Banco.getConexao();
         const sql = 'SELECT * FROM perfis WHERE funcionario_id = ?';
 
         try {
-            const [rows] = await conexao.execute(sql, this.usuario_logado);
+            const [rows] = await conexao.promise().execute(sql, [this.usuario_logado]);
             return rows.length > 0 ? rows[0] : null;
         } catch (error) {
             throw new Error('Erro ao buscar perfil pelo funcionário_id: ' + error.message);
         }
     }
 
+    // Getters e setters
     get idade() {
         return this._idade;
     }
     set idade(valor) {
         this._idade = valor;
+    }
+
+    get imagem() {
+        return this._imagem;
+    }
+    set imagem(valor) {
+        this._imagem = valor;
     }
 
     get endereco() {
@@ -199,4 +199,10 @@ module.exports = class Perfis {
         this._id = valor;
     }
 
-}
+    get usuario_logado() {
+        return this._usuario_logado;
+    }
+    set usuario_logado(valor) {
+        this._usuario_logado = valor;
+    }
+};
