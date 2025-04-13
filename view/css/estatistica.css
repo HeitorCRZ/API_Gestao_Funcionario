@@ -396,4 +396,68 @@ button.ativo {
 #TabelaGetOpcao th {
     font-weight: bold;
 }
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header fixo com imagem */
+.top-header {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    border-bottom: 1px solid #dee2e6;
+    text-align: center;
+}
+
+.header-logo {
+    max-height: 60px;
+}
+
+/* Menu lateral */
+.menu-desktop {
+    width: 250px;
+    background-color: #f1f1f1;
+    min-height: 100vh;
+    border-right: 1px solid #dee2e6;
+}
+
+.menu-desktop .nav-link {
+    color: #333;
+    font-weight: 500;
+}
+
+.menu-desktop .nav-link:hover {
+    background-color: #e2e6ea;
+    border-radius: 5px;
+}
+
+/* Submenu */
+.submenu-list {
+    display: none;
+    padding-left: 15px;
+}
+
+.submenu.open .submenu-list {
+    display: block;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .menu-desktop {
+        display: none;
+    }
+
+    #menu-mobile {
+        display: block;
+        background: #f1f1f1;
+    }
+}
+
+.grafico-frame iframe {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 

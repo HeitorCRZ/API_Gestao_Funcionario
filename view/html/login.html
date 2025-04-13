@@ -95,12 +95,16 @@
                     }).then(response => response.json())
                         .then(data => {
                             if (respJson.cargo === "Administração") {
-                                window.location.href = "../html/paginaAdminstrador.html";
+                                window.location.href = "../html/paginaAdministracao.html";
                             } else {
                                 if (data.status === false) {
                                     window.location.href = "../html/cadastrarPerfil.html";
                                 } else {
-                                    window.location.href = "../html/paginaFuncionario.html";
+                                    const idUsuario = {
+                                        id: respJson.id
+                                    };
+                                    localStorage.setItem("usuario", JSON.stringify(idUsuario));
+                                    window.location.href = "../html/perfil.html";
                                 }
                             }
 

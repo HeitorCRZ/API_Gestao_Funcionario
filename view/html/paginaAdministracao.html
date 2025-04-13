@@ -1,172 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../css/estatistica.css">
-
-    <!-- fontes das letras -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
-
-    <!-- fontes do bootstrap -->
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Bootstrap JS (necessário para o modal funcionar corretamente) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página principal</title>
+  <link rel="stylesheet" href="../css/paginaAdministracao.css" />
 </head>
 
 <body>
 
-    <main>
-        <header>
-            <div class="wrapper"> <!-- Novo wrapper para separar o menu -->
-
-                <div class="menu-desktop">
-                    <button onclick="abrirmenu()" id="btn-menu">
-                        <span class="linha"></span>
-                        <span class="linha"></span>
-                        <span class="linha"></span>
-                    </button>
-                    <nav>
-                        <ul>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="./grafico.html">Graficos</a></li>
-
-                            <li class="submenu">
-                                <a href="#" onclick="toggleSubmenu(event)">Cadastro <i
-                                        class="bi bi-caret-down-fill"></i></a>
-                                <ul class="submenu-list">
-                                    <li><a href="./formsFuncionarios.html">Funcionario</a></li>
-                                    <li><a href="./formsDepartamentos.html">Departamento</a></li>
-                                </ul>
-                            </li>
+  <nav class="navbar fixed-top custom-navbar">
+    <div class="container-fluid justify-content-center align-items-center d-flex">
+      <span class="navbar-title">Sistema de Gestão de Funcionários - AppStorm</span>
+    </div>
+  </nav>
 
 
-                        </ul>
-                    </nav>
-                </div>
+  <!-- Layout geral -->
+  <main class="painel-geral">
+    <!-- Painel com os cards -->
+    <div class="painel-relatorio">
+      <div class="card card-salario">
+        <img src="mediaSalaria.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Funcionários</h5>
+          <p class="card-text">Média salarial: <span class="info-salario">...</span></p>
+        </div>
+      </div>
 
+      <div class="card card-qtd-funcionarios">
+        <img src="quantidadeFuncionarios.jpeg" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Funcionários</h5>
+          <p class="card-text">Quantidade: <span class="info-qtd-funcionarios">...</span></p>
+          Funcionários sem perfil: <span class="info-semPerfil">...</span>
+        </div>
+      </div>
 
-                <div class="menu-mobile" id="menu-mobile">
-                    <nav>
-                        <ul>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="./grafico.html">Graficos</a></li>
+      <div class="card card-departamentos">
+        <img src="departamentos.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Departamentos</h5>
+          <p class="card-text">Número: <span class="info-departamentos">...</span></p>
+        </div>
+      </div>
 
-                            <li class="submenu">
-                                <a href="#" onclick="toggleSubmenu(event)">Cadastro <i
-                                        class="bi bi-caret-down-fill"></i></a>
-                                <ul class="submenu-list">
-                                    <li><a href="./formsFuncionarios.html">Funcionario</a></li>
-                                    <li><a href="./formsDepartamentos.html">Departamento</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+      <div class="card card-genero">
+        <img src="proporcaoGenero.jpeg" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Proporção de gênero</h5>
+          <p class="card-text">
+            Masculino: <span class="info-masculino">...</span><br />
+            Feminino: <span class="info-feminino">...</span>
+          </p>
+        </div>
+      </div>
+    </div>
 
-                <div class="container">
+    <!-- Sidebar com os botões -->
+    <div class="sidebar-botoes">
+      <button class="btn-sidebar" id="btn-funcionarios">Gestão de Funcionários</button>
+      <button class="btn-sidebar" id="btn-departamentos">Gestão de Departamentos</button>
+      <button class="btn-sidebar" id="btn-graficos">Ver Gráficos</button>
+      <button class="btn-sidebar" id="btn-log">Ver Log do Sistema</button>
+    </div>
+  </main>
 
-                    <div class="caixas">
-                        <main class="container mt-3">
-                            <h2 class="mb-4">Visão Geral</h2>
-                            <div class="row g-4">
-                                <div class="col-md-3">
-                                    <div class="card text-bg-primary">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Total de Funcionários</h5>
-                                            <p class="card-text fs-4">120</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card text-bg-success">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Média Salarial</h5>
-                                            <p class="card-text fs-4">R$ 4.200,00</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card text-bg-warning">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Departamentos</h5>
-                                            <p class="card-text fs-4">5</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card text-bg-info">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Novos Funcionários</h5>
-                                            <p class="card-text fs-4">+8 este mês</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+  <script>
+    async function carregarRelatorio() {
+      try {
+        const resposta = await fetch("/funcionarios/relatorio");
+        const dados = await resposta.json();
 
-                            <div class="graficoOcorrencias">
-                                <h3>Distribuição salarial</h3>
-                                <div class="grafico-frame">
-                                    <iframe src="../html/grafico.html"></iframe>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-    </main>
+        if (dados.status && dados.relatorio) {
+          const relatorio = dados.relatorio;
 
+          const mediaSalarial = parseFloat(relatorio.media_salarial_geral).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+          });
+          document.querySelector(".info-salario").textContent = mediaSalarial;
 
-    <script>
-        /*codigo para o menu do site */
-        const menuDiv = document.getElementById("menu-mobile")
-        const btnAnimar = document.getElementById("btn-menu")
-        const forms = document.getElementById("container-wrapper")
-        const dadosFuncionarios = localStorage.getItem("Funcionarios")
-        const objFuncionario = JSON.parse(dadosFuncionarios);
+          document.querySelector(".info-qtd-funcionarios").textContent = relatorio.total_funcionarios;
+          document.querySelector(".info-departamentos").textContent = relatorio.distribuicao_salarial_departamento.length;
 
-        btnAnimar.addEventListener('click', animarMenu)
-        function animarMenu() {
-            menuDiv.classList.toggle('abrir')
-            btnAnimar.classList.toggle('ativo')
+          const generoMasculino = relatorio.proporcao_genero.find(g => g.genero === "Masculino")?.total || 0;
+          const generoFeminino = relatorio.proporcao_genero.find(g => g.genero === "Feminino")?.total || 0;
 
-            forms.style.display = "none";
+          document.querySelector(".info-masculino").textContent = generoMasculino;
+          document.querySelector(".info-feminino").textContent = generoFeminino;
 
-            if (menuDiv.classList.contains('abrir')) {
-                forms.style.display = "none"; // Esconde o formulário
-            } else {
-                forms.style.display = "flex"; // Mostra o formulário novamente
-            }
+          const funcionariosSemPerfil = relatorio.total_funcionarios-generoFeminino-generoMasculino;
+          document.querySelector(".info-semPerfil").textContent = funcionariosSemPerfil;
+
+        } else {
+          console.error("Erro ao obter relatório:", dados.msg);
         }
+      } catch (erro) {
+        console.error("Erro na requisição do relatório:", erro);
+      }
+    }
 
+    window.addEventListener("DOMContentLoaded", () => {
+      carregarRelatorio();
 
-        function toggleSubmenu(event) {
-            event.preventDefault();
-            const item = event.target.closest('.submenu');
-            item.classList.toggle('open');
-        }
+      // Redirecionamento dos botões
+      document.getElementById("btn-funcionarios").addEventListener("click", () => {
+        window.location.href = "formsFuncionarios.html";
+      });
 
+      document.getElementById("btn-departamentos").addEventListener("click", () => {
+        window.location.href = "formsDepartamentos.html";
+      });
 
-    </script>
+      document.getElementById("btn-graficos").addEventListener("click", () => {
+        window.location.href = "grafico.html";
+      });
+
+      document.getElementById("btn-log").addEventListener("click", () => {
+        window.location.href = "logs.html";
+      });
+    });
+  </script>
 
 </body>
 

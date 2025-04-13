@@ -1,0 +1,41 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .custom-navbar {
+    background-color: #1e3a8a;
+    height: 100px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
+  
+  .navbar-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+    text-align: center;
+  }
+  
+  .app-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+  }
+  
+  /* MAIN */
+  main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 90px;
+    margin: 0 100px 0 100px;
+    gap: 2rem;
+    position: relative;
+  }
+  

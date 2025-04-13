@@ -4,16 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/grafico.css">
+    <link rel="stylesheet" href="../css/graficoteste.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Document</title>
 </head>
 
 <body>
-
+    <div class="proporcao-genero mt-5">
+        <h3>Proporção de Gênero(Funcionários que ainda não montaram seu perfil não são contabilizados)</h3>
+        <div class="grafico-genero-container">
+            <canvas id="graficoGenero"></canvas>
+        </div>
+    </div>
     <!-- Resources -->
     <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
     <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
     <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Chart code -->
     <script>
@@ -134,6 +143,66 @@
             }
 
         }); // end am4core.ready()
+
+        async function carregarRelatorio() {
+            try {
+                const resposta = await fetch("/funcionarios/relatorio");
+                const dados = await resposta.json();
+
+                if (dados.status && dados.relatorio) {
+                    const relatorio = dados.relatorio;
+                    console.log("Relatório recebido:", relatorio);
+
+                    // Atualiza os cards principais
+                    document.querySelector(".card-blue .info-value").textContent = relatorio.total_funcionarios;
+
+                    const mediaSalarial = parseFloat(relatorio.media_salarial_geral).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
+                    document.querySelector(".card-green .info-value").textContent = mediaSalarial;
+
+                    const numDepartamentos = relatorio.distribuicao_salarial_departamento.length;
+                    document.querySelector(".card-yellow .info-value").textContent = numDepartamentos;
+
+                    // Gráfico de proporção de gênero
+                    const ctxGenero = document.getElementById('graficoGenero').getContext('2d');
+                    const generos = relatorio.proporcao_genero.map(item => item.genero);
+                    const totais = relatorio.proporcao_genero.map(item => item.total);
+
+                    new Chart(ctxGenero, {
+                        type: 'pie',
+                        data: {
+                            labels: generos,
+                            datasets: [{
+                                data: totais,
+                                backgroundColor: ['#4e73df', '#e83e8c'], // Azul e rosa
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Proporção de Gênero'
+                                }
+                            }
+                        }
+                    });
+
+                } else {
+                    console.error("Erro ao obter relatório:", dados.msg);
+                }
+            } catch (erro) {
+                console.error("Erro na requisição do relatório:", erro);
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", carregarRelatorio);
     </script>
 
     <!-- HTML -->
@@ -141,3 +210,12 @@
 </body>
 
 </html>
+
+.grafico-genero-container {
+    max-width: 600px;
+    margin: auto;
+}
+#graficoGenero {
+    width: 100% !important;
+    height: auto !important;
+}
