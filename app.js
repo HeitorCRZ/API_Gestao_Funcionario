@@ -13,6 +13,8 @@ app.use(express.json());
 app.use(express.static('js'));
 app.use('/html', express.static(path.join(__dirname, 'view/html')));
 app.use('/css', express.static(path.join(__dirname, 'view/css')));
+app.use('/uploads', express.static('uploads'));
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'view/html/login.html'));

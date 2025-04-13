@@ -37,8 +37,8 @@
             <th>Data/Hora</th>
             <th>Usuário</th>
             <th>Operação</th>
-            <th>Detalhes</th>
-            <th>Alterações</th>
+            <th>Entidade</th>
+            <th>ID Afetado</th>
           </tr>
         </thead>
 
@@ -89,23 +89,6 @@
     }
 
 
-
-    function formatarAlteracoes(texto) {
-      // Divide por ponto e vírgula e cria <li>
-      if (!texto) return "<li>Nenhuma alteração registrada</li>";
-
-      return texto.split(";").map(alt => {
-        const alteracaoFormatada = alt.trim().replace("->", "→");
-        return `<li>${alteracaoFormatada}</li>`;
-      }).join("");
-    }
-
-
-
-
-
-
-
     async function carregarLogs(pagina = 1) {
       try {
         mostrarSpinner(true);
@@ -117,7 +100,6 @@
           const tbody = document.querySelector("table tbody");
           tbody.innerHTML = "";
 
-          // Atualiza a variável de última página
           ultimaPagina = json.dados.length < itensPorPagina;
 
           json.dados.forEach(log => {
@@ -129,11 +111,10 @@
               <td class="fw-semibold text-${log.acao === 'DELETE' ? 'danger' : log.acao === 'UPDATE' ? 'warning' : 'success'}">${log.acao}</td>
               <td>
                 <div><strong>Tabela:</strong> ${log.tabela_afetada}</div>
-                <div><strong>ID:</strong> ${log.id_registro_afetado}</div>
               </td>
               <td>
                 <ul class="mb-0 ps-3">
-                  ${formatarAlteracoes(log.alteracoes)}
+                  <div><strong>ID:</strong> ${log.id_registro_afetado}</div>
                 </ul>
               </td>
             `;

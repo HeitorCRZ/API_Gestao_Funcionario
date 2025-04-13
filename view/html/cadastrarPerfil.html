@@ -108,12 +108,12 @@
             const result = await response.json();
             if (response.ok) {
                 alert('Perfil cadastrado com sucesso!');
-                window.location.href = "../html/paginaFuncionario.html";
+                window.location.href = "../html/perfil.html";
                 const idUsuario = {
                     id: usuario_logado,
                 };
 
-                localStorage.setItem("usuario", JSON.stringify(usuario));
+                localStorage.setItem("usuario", JSON.stringify(idUsuario));
 
             } else {
                 alert(result.erro || 'Erro ao cadastrar perfil.');
