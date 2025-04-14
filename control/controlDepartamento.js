@@ -134,6 +134,35 @@ module.exports = class ControlDepartamento {
 
         res.status(200).send(objResposta);
     }
+
+
+    async controle_departamento_filtrarPorNome(req, res) {
+        const nome = req.params.nome;
+
+        const departamento = new Departamento();
+        departamento._nome = nome;
+
+        const resultado = await departamento.get_Departamento_por_nome();
+
+        const objResposta = {
+            cod: 6,
+            status: Array.isArray(resultado) && resultado.length > 0,
+            msg: '',
+            dados: []
+        };
+
+        if (resultado === false) {
+            objResposta.msg = 'Erro interno ao buscar departamentos';
+        } else if (resultado.length === 0) {
+            objResposta.msg = 'Nenhum departamento encontrado com esse nome';
+        } else {
+            objResposta.msg = 'Departamentos encontrados com sucesso';
+            objResposta.dados = resultado;
+        }
+
+        res.status(200).send(objResposta);
+    }
+    
     async controle_departamento_todos(req, res) {
         const departamento = new Departamento();
 

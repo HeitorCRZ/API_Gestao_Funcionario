@@ -46,6 +46,21 @@
 
                 <div class="container mt-4">
                     <h2>Listagem dos funcionarios</h2>
+                    <div class="row g-2 my-3">
+                        <div class="col-md-4">
+                            <input type="text" id="filtroNome" class="form-control" placeholder="Filtrar por Nome">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="filtroCargo" class="form-control" placeholder="Filtrar por Cargo">
+                        </div>
+                        <div class="col-md-4">
+                            <select id="filtroDepartamento" class="form-select">
+                                <option value="">Todos os Departamentos</option>
+                                <!-- opções inseridas dinamicamente -->
+                            </select>
+                        </div>
+                    </div>
+
                     <table id="TabelaGetOpcao" class="table table-striped table-hover">
                         <thead>
                             <tr>
@@ -300,6 +315,33 @@
             spinner.style.display = mostrar ? "block" : "none";
         }
 
+        function aplicarFiltros() {
+            const nomeFiltro = document.getElementById("filtroNome").value.toLowerCase();
+            const cargoFiltro = document.getElementById("filtroCargo").value.toLowerCase();
+            const departamentoFiltro = document.getElementById("filtroDepartamento").value;
+
+            const linhas = TabelaGetOpcao.querySelectorAll("tbody tr");
+
+            linhas.forEach(linha => {
+                const colunas = linha.querySelectorAll("td");
+
+                const nome = colunas[1]?.textContent.toLowerCase() || "";
+                const cargo = colunas[4]?.textContent.toLowerCase() || "";
+                const departamento = colunas[7]?.textContent || "";
+
+                const nomeMatch = nome.includes(nomeFiltro);
+                const cargoMatch = cargo.includes(cargoFiltro);
+                const depMatch = departamentoFiltro === "" || departamento === departamentoFiltro;
+
+                if (nomeMatch && cargoMatch && depMatch) {
+                    linha.style.display = "";
+                } else {
+                    linha.style.display = "none";
+                }
+            });
+        }
+
+
         document.addEventListener("DOMContentLoaded", async () => {
             try {
 
@@ -315,7 +357,13 @@
                 }).then((response) => {
                     return response.json();
                 }).then((data) => {
-
+                    const filtroSelect = document.getElementById('filtroDepartamento');
+                    data.dados.forEach(dep => {
+                        const option = document.createElement('option');
+                        option.value = dep.id;
+                        option.textContent = dep.nome;
+                        filtroSelect.appendChild(option);
+                    });
                     const select = document.getElementById('departamento_idPost');
                     data.dados.forEach(dep => {
                         const option = document.createElement('option');
@@ -327,9 +375,14 @@
             } catch (error) {
                 console.error("Erro ao carregar departamentos:", error);
             }
+
         });
         document.addEventListener("DOMContentLoaded", () => {
             carregarFuncionarios(paginaAtual);
+            document.getElementById("filtroNome").addEventListener("input", aplicarFiltros);
+            document.getElementById("filtroCargo").addEventListener("input", aplicarFiltros);
+            document.getElementById("filtroDepartamento").addEventListener("change", aplicarFiltros);
+
         });
         function formatarData(dataISO) {
             const data = new Date(dataISO);
@@ -452,6 +505,7 @@
 
                 TabelaGetOpcao.appendChild(tbody);
                 TabelaGetOpcao.style.display = "block";
+                aplicarFiltros();
             }
         }
 

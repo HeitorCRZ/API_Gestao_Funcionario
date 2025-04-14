@@ -20,6 +20,7 @@ module.exports = class RouterFuncionario {
             this._controleFuncionario.controle_funcionario_login
         )
 
+
         this._router.post('/cadastrarCSV/:id',
             this._middlewareFuncionario.validar_autenticacao,
             this._middlewareFuncionario.uploadJSON,

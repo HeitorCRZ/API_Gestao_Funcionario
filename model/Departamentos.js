@@ -13,7 +13,7 @@ module.exports = class Departamento {
   async post_departamento() {
     const conexao = Banco.getConexao();
     const sql = "INSERT INTO departamentos (nome, orcamento, localizacao, data_criacao) VALUES (?, ?, ?, ?)";
-    console.log("Dado ---> "+this.nome);
+    console.log("Dado ---> " + this.nome);
     try {
       const [result] = await conexao.promise().execute(sql, [this.nome, this.orcamento, this.localizacao, this.data_criacao]);
       this._idUFuncionario = result.insertId;
@@ -49,7 +49,7 @@ module.exports = class Departamento {
   async verificarDepartamento() {
     const conexao = Banco.getConexao()
     const sql = "select * from departamentos where nome = ?"
-    console.log("Dado ---> "+this.nome);
+    console.log("Dado ---> " + this.nome);
     try {
       const [result] = await conexao.promise().execute(sql, [this._nome])
       console.log(result)
@@ -114,7 +114,18 @@ module.exports = class Departamento {
       return false;
     }
   }
+  async get_Departamento_por_nome() {
+    const conexao = Banco.getConexao();
+    const sql = "SELECT * FROM Departamentos WHERE nome LIKE ?";
+    try {
+      const [resultado] = await conexao.promise().execute(sql, [`%${this._nome}%`]);
 
+      return resultado; // retorna o array direto para o controle tratar
+    } catch (erro) {
+      console.log("Erro no get_Departamento_por_nome >>", erro);
+      return false;
+    }
+  }
   async delete_departamento() {
     const conexao = Banco.getConexao();
 

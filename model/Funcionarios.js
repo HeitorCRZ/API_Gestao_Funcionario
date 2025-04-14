@@ -307,7 +307,6 @@ module.exports = class Funcionario {
         }
     }
 
-
     async get_Funcionario() {
         const conexao = Banco.getConexao();
         const mysql = "SELECT * FROM Funcionarios WHERE senha = md5(?) and email = ? ";

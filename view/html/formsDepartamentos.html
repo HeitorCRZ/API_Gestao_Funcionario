@@ -47,6 +47,18 @@
 
                 <div class="container mt-4">
                     <h2>Listagem dos Departamentos</h2>
+                    <div class="row mt-3 mb-3">
+                        <div class="col-md-6">
+                            <input type="text" id="filtroNome" class="form-control" placeholder="Filtrar por nome...">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-primary" onclick="filtrarPorNome()">Filtrar</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-secondary" onclick="limparFiltro()">Limpar</button>
+                        </div>
+                    </div>
+
                     <table id="TabelaGetOpcao" class="table table-striped table-hover">
                         <thead>
                             <tr>
@@ -325,6 +337,47 @@
 
             TabelaGetOpcao.appendChild(tbody);
             TabelaGetOpcao.style.display = "block";
+        }
+
+        async function filtrarPorNome() {
+            const nome = document.getElementById("filtroNome").value.trim();
+            if (!nome) {
+                carregarDepartamentos(1);
+                return;
+            }
+
+            try {
+                mostrarSpinner(true);
+                const response = await fetch(`/departamentos/buscarPorNome/${encodeURIComponent(nome)}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                const json = await response.json();
+                if (json.status) {
+                    montarTabelaOpcao(json);
+                    document.getElementById("numPagina").textContent = "Filtro";
+                    document.getElementById("btnAnterior").disabled = true;
+                    document.getElementById("btnProximo").disabled = true;
+                } else {
+                    mensage_error.textContent = "Nenhum departamento encontrado.";
+                    mensage_error.style.display = "block";
+                    const tbody = TabelaGetOpcao.querySelector("tbody") || document.createElement("tbody");
+                    tbody.innerHTML = '';
+                    TabelaGetOpcao.appendChild(tbody);
+                }
+
+            } catch (erro) {
+                console.error("Erro ao filtrar por nome:", erro);
+            } finally {
+                mostrarSpinner(false);
+            }
+        }
+
+        function limparFiltro() {
+            document.getElementById("filtroNome").value = "";
+            carregarDepartamentos(1);
         }
 
         const funcionarioData = JSON.parse(localStorage.getItem("Funcionario"));

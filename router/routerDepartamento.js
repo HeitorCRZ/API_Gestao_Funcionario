@@ -59,7 +59,11 @@ module.exports = class RouterDepartamento {
             this._middlewareDepartamento.validar_autenticacao,  
             this._controleDepartamento.controle_departamento_readPage
         );     
-        
+         // Buscar por nome (filtro)
+         this._router.get('/buscarPorNome/:nome',
+            this._middlewareDepartamento.validar_autenticacao,
+            this._controleDepartamento.controle_departamento_filtrarPorNome
+        );
         return this._router
 
     }

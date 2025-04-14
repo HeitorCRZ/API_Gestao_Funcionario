@@ -51,11 +51,11 @@ module.exports = class ControlFuncionario {
             if (!Array.isArray(lista)) {
                 return response.status(400).json({ msg: 'Dados de funcionários inválidos' });
             }
-    
+
             const funcionariosCriados = [];
             const funcionariosDuplicados = [];
             const usuario_logado = request.params.id;
-    
+
             for (const dados of lista) {
                 try {
                     const funcionario = new Funcionario();
@@ -68,9 +68,9 @@ module.exports = class ControlFuncionario {
                     funcionario.salario = dados.salario;
                     funcionario.data_contratacao = dados.data_contratacao;
                     funcionario.departamento_id = dados.departamento_id;
-    
+
                     const existe = await funcionario.verificarEmail();
-    
+
                     if (!existe) {
                         const criado = await funcionario.post_funcionario();
                         if (criado) funcionariosCriados.push(funcionario);
@@ -82,14 +82,14 @@ module.exports = class ControlFuncionario {
                     // Você pode logar ou salvar quem falhou também, se quiser
                 }
             }
-    
+
             return response.status(200).json({
                 message: 'Funcionários processados com sucesso!',
                 processados: funcionariosCriados.length,
                 duplicados: funcionariosDuplicados.length,
                 nomes_duplicados: funcionariosDuplicados
             });
-    
+
         } catch (error) {
             console.error("Erro ao processar CSV:", error);
             if (!response.headersSent) {
@@ -97,7 +97,7 @@ module.exports = class ControlFuncionario {
             }
         }
     }
-    
+
 
 
 
@@ -222,8 +222,6 @@ module.exports = class ControlFuncionario {
         };
         res.status(200).send(objResposta);
     }
-
-
 
 
     async controle_funcionario_por_id(req, res) {
