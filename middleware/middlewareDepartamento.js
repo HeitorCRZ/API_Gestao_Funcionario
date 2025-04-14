@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { parse } = require('csv-parse/sync');
 const multer = require('multer');
+const TokenJWT = require("../model/meuTokenJWT");
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -54,6 +55,20 @@ module.exports = class MiddlewareDepartamento {
         }
       }
     ];
+  }
+
+
+  validar_autenticacao = async (req, res, next) => {
+    const objToken = new TokenJWT()
+    const headers = req.headers['authorization']; // certo: tudo minúsculo
+    if (objToken.validarToken(headers) == true) {
+      next();
+      return
+    }
+    return res.status(400).json({
+      msg: "Token Invalido",
+      status: false
+    });
   }
   normalizarDepartamentos = (body) => {
     if (Array.isArray(body.departamentos)) {

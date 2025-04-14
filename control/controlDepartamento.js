@@ -101,7 +101,7 @@ module.exports = class ControlDepartamento {
     }
     async controle_departamento_deletar(req, res) {
         const id = req.params.id;
-        const usuario_logado = req.body.usuario_logado;
+        const usuario_logado = req.query.usuario_logado;
 
         const departamento = new Departamento();
         departamento._departamento_id = id;

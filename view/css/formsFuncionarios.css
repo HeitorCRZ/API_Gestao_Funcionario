@@ -1,0 +1,239 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", serif;
+}
+
+.custom-navbar {
+    background-color: #1e3a8a;
+    height: 100px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 15px;
+    text-align: center;
+}
+
+.navbar-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.app-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+}
+
+/* MAIN */
+main {
+    display: flex;
+    flex-direction: column;
+    padding-top: 90px;
+    padding-left: 20px;
+    padding-right: 20px;
+    gap: 2rem;
+    position: relative;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: 100%;
+}
+
+.container .texto-inicio {
+    background-color: rgb(220, 218, 217);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+header .menu-desktop nav ul {
+    list-style-type: none;
+    margin-top: 10px;
+}
+
+.grafico-frame {
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+}
+
+.grafico-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 8px;
+}
+
+.graficoOcorrencias {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 30px auto;
+    transition: transform 0.2s ease;
+    width: 100%;
+    max-width: 800px;
+}
+
+.graficoOcorrencias:hover {
+    transform: translateY(-5px);
+}
+
+.caixas {
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+}
+
+#btn-menu {
+    background: transparent;
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid #fff;
+    transition: 0.2s;
+    display: none;
+    z-index: 1900;
+}
+
+.linha {
+    height: 3px;
+    background: #fff;
+    display: block;
+    width: 25px;
+    margin: 5px auto;
+    transform-origin: center;
+    transition: 0.5s;
+}
+
+button.ativo .linha:nth-child(1) {
+    transform: translateY(37.5px) rotate(-42deg);
+    background-color: white;
+    bottom: 67.5%;
+}
+
+button.ativo .linha:nth-child(3) {
+    transform: translateY(-37.5px) rotate(42deg);
+    background-color: white;
+    top: 60%;
+}
+
+button.ativo .linha:nth-child(2) {
+    opacity: 0;
+}
+
+button.ativo {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1900;
+}
+
+.container-wrapper {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    padding: 25px;
+}
+
+/* Botões com estilo */
+button,
+.button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2563eb;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+button:hover,
+.button:hover {
+    background-color: #1d4ed8;
+    transform: scale(1.03);
+}
+
+.button.sucesso {
+    background-color: #41df75;
+    border-color: #50df57;
+}
+
+.button.sucesso:hover {
+    background-color: #34c96d;
+}
+
+/* Tabela estilizada */
+#TabelaGetOpcao {
+    width: 100%;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow-x: auto;
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+}
+
+#TabelaGetOpcao th, #TabelaGetOpcao td {
+    padding: 10px 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+#TabelaGetOpcao th {
+    font-weight: bold;
+    background-color: #f0f0f0;
+}
+
+/* Responsivo */
+@media (max-width: 640px) {
+    .custom-navbar {
+        height: auto;
+        padding: 15px;
+        flex-direction: column;
+    }
+
+    .navbar-title, .app-title {
+        font-size: 1.6rem;
+    }
+
+    main {
+        padding: 60px 15px 20px;
+    }
+
+    .container-wrapper {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .grafico-frame {
+        height: 300px;
+    }
+
+    .graficoOcorrencias {
+        padding: 15px;
+    }
+
+    #btn-menu {
+        display: block;
+    }
+
+    #TabelaGetOpcao {
+        font-size: 0.8rem;
+    }
+
+    #TabelaGetOpcao th, #TabelaGetOpcao td {
+        padding: 8px;
+    }
+}

@@ -68,9 +68,19 @@
   </main>
 
   <script>
+    const funcionario = JSON.parse(localStorage.getItem("Funcionario"));
+    const token = funcionario.token
     async function carregarRelatorio() {
       try {
-        const resposta = await fetch("/funcionarios/relatorio");
+        const resposta = await fetch("/funcionarios/relatorios", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+
         const dados = await resposta.json();
 
         if (dados.status && dados.relatorio) {
@@ -91,7 +101,7 @@
           document.querySelector(".info-masculino").textContent = generoMasculino;
           document.querySelector(".info-feminino").textContent = generoFeminino;
 
-          const funcionariosSemPerfil = relatorio.total_funcionarios-generoFeminino-generoMasculino;
+          const funcionariosSemPerfil = relatorio.total_funcionarios - generoFeminino - generoMasculino;
           document.querySelector(".info-semPerfil").textContent = funcionariosSemPerfil;
 
         } else {

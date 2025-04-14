@@ -1,0 +1,11 @@
+nome,email,senha,cpf,cargo,salario,data_contratacao,departamento_id
+Jaoao,jaoa0o@email.com,123,122.454.789-01,analista,6000,2023-09-01,1
+Maria,maria@email.com,abc123,321.654.987-00,gerente,8500,2022-05-15,2
+Carlos,carlos@email.com,qwe456,456.789.123-55,desenvolvedor,7000,2023-01-20,1
+Ana,ana@email.com,senha123,789.123.456-78,designer,5500,2021-12-10,3
+Roberto,roberto@email.com,pass2023,987.654.321-99,suporte,4000,2024-02-05,4
+Fernanda,fernanda@email.com,minhasenha,963.852.741-36,analista,6200,2023-08-11,1
+Paulo,paulo@email.com,paulo@321,852.741.963-47,coordenador,9100,2020-06-30,2
+Juliana,juliana@email.com,jul123,741.963.852-58,desenvolvedor,7400,2022-09-18,3
+Thiago,thiago@email.com,senha321,369.258.147-69,estagiario,2000,2024-03-01,4
+Larissa,larissa@email.com,larissa!,159.753.486-70,analista,6300,2023-11-22,1

@@ -1,221 +1,198 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/graficoteste.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/grafico.css" />
+  
+  <!-- BOOTSTRAP CSS e JS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Document</title>
+  <!-- amCharts -->
+  <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+  <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+  <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+  <title>Gráficos</title>
 </head>
 
 <body>
-    <div class="proporcao-genero mt-5">
-        <h3>Proporção de Gênero(Funcionários que ainda não montaram seu perfil não são contabilizados)</h3>
-        <div class="grafico-genero-container">
-            <canvas id="graficoGenero"></canvas>
-        </div>
+  <nav class="navbar fixed-top custom-navbar">
+    <div class="container-fluid justify-content-center align-items-center d-flex position-relative">
+      <span class="navbar-title mx-auto">Logs - AppStorm</span>
+      <button type="button" class="btn-close position-absolute start-0 ms-3" aria-label="Close"
+        onclick="window.location.href='paginaAdministracao.html';"
+        style="transform: scale(1.8); filter: invert(19%) sepia(99%) saturate(7074%) hue-rotate(355deg) brightness(96%) contrast(119%); z-index: 1051;">
+      </button>
     </div>
-    <!-- Resources -->
-    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
-    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+  </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <div class="container mt-5 pt-5">
+    <!-- KPIs -->
+    <div class="row text-center mb-5">
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm p-3 h-100">
+          <h6 class="text-muted">Média Salarial Geral</h6>
+          <p class="fs-5 fw-semibold text-primary" id="info-salario">Carregando...</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm p-3 h-100">
+          <h6 class="text-muted">Total de Funcionários</h6>
+          <p class="fs-5 fw-semibold" id="info-funcionarios">Carregando...</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="card shadow-sm p-3 h-100">
+          <h6 class="text-muted">Total de Departamentos</h6>
+          <p class="fs-5 fw-semibold" id="info-departamentos">Carregando...</p>
+        </div>
+      </div>
+    </div>
 
-    <!-- Chart code -->
-    <script>
-        am4core.ready(function () {
+    <!-- Gráfico Salarial -->
+    <div class="graficoOcorrencias mb-5">
+      <h3 class="mb-3 text-center text-secondary">Distribuição Salarial</h3>
+      <div id="graficoSalarial" style="width: 100%; height: 450px;"></div>
+    </div>
 
-            // Themes begin
-            am4core.useTheme(am4themes_animated);
-            // Themes end
+    <!-- Gráfico de Idade -->
+    <div class="graficoOcorrencias mb-5">
+      <h3 class="mb-3 text-center text-secondary">Idade por Departamento</h3>
+      <div id="graficoDepartamento" style="width: 100%; height: 450px;"></div>
+    </div>
+  </div>
 
+  <script>
+    const usuario = JSON.parse(localStorage.getItem("Funcionario"));
+    const token = usuario.token;
 
+    async function carregarRelatorio() {
+      try {
+        const uri_funcionarios_relatorios = "/funcionarios/relatorios";
+        const response = await fetch(uri_funcionarios_relatorios, {
+          method: "GET",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+          },
+        });
 
-            var chart = am4core.create('chartdiv', am4charts.XYChart)
-            chart.colors.step = 2;
+        const data = await response.json();
 
-            chart.legend = new am4charts.Legend()
-            chart.legend.position = 'top'
-            chart.legend.paddingBottom = 20
-            chart.legend.labels.template.maxWidth = 95
+        if (data.status && data.relatorio) {
+          const relatorio = data.relatorio;
 
-            var xAxis = chart.xAxes.push(new am4charts.CategoryAxis())
-            xAxis.dataFields.category = 'category'
-            xAxis.renderer.cellStartLocation = 0.1
-            xAxis.renderer.cellEndLocation = 0.9
-            xAxis.renderer.grid.template.location = 0;
+          // KPIs
+          document.getElementById("info-salario").textContent = formatarMoeda(parseFloat(relatorio.media_salarial_geral));
+          document.getElementById("info-funcionarios").textContent = relatorio.total_funcionarios;
+          document.getElementById("info-departamentos").textContent = relatorio.distribuicao_salarial_departamento.length;
 
-            var yAxis = chart.yAxes.push(new am4charts.ValueAxis());
-            yAxis.min = 0; // Define o mínimo do eixo Y
-            yAxis.max = 10; // Define o máximo (opcional, ajuste ao seu gráfico)
-            yAxis.strictMinMax = true; // Garante que o eixo use os limites definidos
-            yAxis.renderer.grid.template.disabled = false; // Garante que as linhas da grade sejam exibidas
-            yAxis.renderer.minGridDistance = 20; // Evita colisões entre rótulos
-            yAxis.renderer.grid.step = 1; // Define a razão da grade como 1
-
-
-            function createSeries(value, name) {
-                var series = chart.series.push(new am4charts.ColumnSeries())
-                series.dataFields.valueY = value
-                series.dataFields.categoryX = 'category'
-                series.name = name
-
-                series.events.on("hidden", arrangeColumns);
-                series.events.on("shown", arrangeColumns);
-
-                var bullet = series.bullets.push(new am4charts.LabelBullet())
-                bullet.interactionsEnabled = false
-                bullet.dy = 13;
-                bullet.label.text = '{valueY}'
-                bullet.label.fill = am4core.color('#ffffff')
-
-                return series;
-            }
-
-            chart.data = [
-                {
-                    category: '1º bimestre',
-                    ocorrencias: 3,
-                    advertencias: 2,
-                    suspensao: 2,
-
-                    marketin: 2,
-                    tecn: 2,
-                    adm: 2,
-
-                    maraketin: 2,
-                    teacn: 2,
-                    adam: 2,
-
-                }
-            ]
-
-
-            createSeries('ocorrencias', 'ocorrência');
-            createSeries('advertencias', 'advertência');
-            createSeries('suspensao', 'suspensão');
-            createSeries('marketin', 'marketin');
-            createSeries('tecn', 'tecn');
-            createSeries('adm', 'adm');
-            createSeries('maraketin', 'marketin');
-            createSeries('teacn', 'tecn');
-            createSeries('adam', 'adm');
-
-            function arrangeColumns() {
-
-                var series = chart.series.getIndex(0);
-
-                var w = 1 - xAxis.renderer.cellStartLocation - (1 - xAxis.renderer.cellEndLocation);
-                if (series.dataItems.length > 1) {
-                    var x0 = xAxis.getX(series.dataItems.getIndex(0), "categoryX");
-                    var x1 = xAxis.getX(series.dataItems.getIndex(1), "categoryX");
-                    var delta = ((x1 - x0) / chart.series.length) * w;
-                    if (am4core.isNumber(delta)) {
-                        var middle = chart.series.length / 2;
-
-                        var newIndex = 0;
-                        chart.series.each(function (series) {
-                            if (!series.isHidden && !series.isHiding) {
-                                series.dummyData = newIndex;
-                                newIndex++;
-                            }
-                            else {
-                                series.dummyData = chart.series.indexOf(series);
-                            }
-                        })
-                        var visibleCount = newIndex;
-                        var newMiddle = visibleCount / 2;
-
-                        chart.series.each(function (series) {
-                            var trueIndex = chart.series.indexOf(series);
-                            var newIndex = series.dummyData;
-
-                            var dx = (newIndex - trueIndex + middle - newMiddle) * delta
-
-                            series.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
-                            series.bulletsContainer.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
-                        })
-                    }
-                }
-            }
-
-        }); // end am4core.ready()
-
-        async function carregarRelatorio() {
-            try {
-                const resposta = await fetch("/funcionarios/relatorio");
-                const dados = await resposta.json();
-
-                if (dados.status && dados.relatorio) {
-                    const relatorio = dados.relatorio;
-                    console.log("Relatório recebido:", relatorio);
-
-                    // Atualiza os cards principais
-                    document.querySelector(".card-blue .info-value").textContent = relatorio.total_funcionarios;
-
-                    const mediaSalarial = parseFloat(relatorio.media_salarial_geral).toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL'
-                    });
-                    document.querySelector(".card-green .info-value").textContent = mediaSalarial;
-
-                    const numDepartamentos = relatorio.distribuicao_salarial_departamento.length;
-                    document.querySelector(".card-yellow .info-value").textContent = numDepartamentos;
-
-                    // Gráfico de proporção de gênero
-                    const ctxGenero = document.getElementById('graficoGenero').getContext('2d');
-                    const generos = relatorio.proporcao_genero.map(item => item.genero);
-                    const totais = relatorio.proporcao_genero.map(item => item.total);
-
-                    new Chart(ctxGenero, {
-                        type: 'pie',
-                        data: {
-                            labels: generos,
-                            datasets: [{
-                                data: totais,
-                                backgroundColor: ['#4e73df', '#e83e8c'], // Azul e rosa
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Proporção de Gênero'
-                                }
-                            }
-                        }
-                    });
-
-                } else {
-                    console.error("Erro ao obter relatório:", dados.msg);
-                }
-            } catch (erro) {
-                console.error("Erro na requisição do relatório:", erro);
-            }
+          desenharGraficoSalarial(relatorio.distribuicao_salarial_departamento);
+          desenharGraficoIdade(relatorio.idade_media_departamento);
+        } else {
+          console.error("Erro ao obter relatório:", data.msg);
         }
+      } catch (erro) {
+        console.error("Erro na requisição do relatório:", erro);
+      }
+    }
 
-        window.addEventListener("DOMContentLoaded", carregarRelatorio);
-    </script>
+    function formatarMoeda(valor) {
+      return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    }
 
-    <!-- HTML -->
-    <div id="chartdiv"></div>
+    function desenharGraficoSalarial(data) {
+      am4core.useTheme(am4themes_animated);
+      const chart = am4core.create("graficoSalarial", am4charts.XYChart);
+      chart.colors.step = 2;
+      chart.legend = new am4charts.Legend();
+      chart.legend.position = "top";
+      chart.paddingBottom = 20;
+
+      chart.data = data.map(dep => ({
+        category: dep.departamento,
+        media_salarial: parseFloat(dep.media_salarial),
+        total_salarial: parseFloat(dep.total_salarial)
+      }));
+
+      const xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      xAxis.dataFields.category = "category";
+      xAxis.renderer.cellStartLocation = 0.1;
+      xAxis.renderer.cellEndLocation = 0.9;
+      xAxis.renderer.grid.template.location = 0;
+
+      const yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      yAxis.min = 0;
+
+      function createSeries(field, name) {
+        const series = chart.series.push(new am4charts.ColumnSeries());
+        series.dataFields.valueY = field;
+        series.dataFields.categoryX = "category";
+        series.name = name;
+        series.columns.template.tooltipText = "{name}: [bold]{valueY}[/]";
+
+        const bullet = series.bullets.push(new am4charts.LabelBullet());
+        bullet.label.text = "{valueY}"; // <-- Agora o adapter vai funcionar
+        bullet.label.adapter.add("text", function (text, target) {
+          const value = target.dataItem?.values?.valueY?.value;
+          return value ? formatarMoeda(value) : text;
+        });
+        bullet.label.fill = am4core.color("#fff");
+        bullet.dy = 13;
+
+        return series;
+      }
+
+      createSeries("media_salarial", "Média Salarial");
+      createSeries("total_salarial", "Total Salarial");
+    }
+
+    function desenharGraficoIdade(data) {
+      am4core.useTheme(am4themes_animated);
+      const chart = am4core.create("graficoDepartamento", am4charts.XYChart);
+      chart.colors.step = 2;
+      chart.legend = new am4charts.Legend();
+      chart.legend.position = "top";
+      chart.paddingBottom = 20;
+
+      chart.data = data.map(dep => ({
+        category: dep.departamento,
+        idade_media: parseFloat(dep.idade_media)
+      }));
+
+      const xAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      xAxis.dataFields.category = "category";
+      xAxis.renderer.cellStartLocation = 0.1;
+      xAxis.renderer.cellEndLocation = 0.9;
+      xAxis.renderer.grid.template.location = 0;
+
+      const yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+      yAxis.min = 0;
+      yAxis.max = 100;
+
+      const series = chart.series.push(new am4charts.ColumnSeries());
+      series.dataFields.valueY = "idade_media";
+      series.dataFields.categoryX = "category";
+      series.name = "Idade Média";
+      series.columns.template.tooltipText = "{name}: [bold]{valueY}[/]";
+
+      const bullet = series.bullets.push(new am4charts.LabelBullet());
+      bullet.label.text = "{valueY}";
+      bullet.label.fill = am4core.color("#fff");
+      bullet.dy = 13;
+    }
+
+    window.addEventListener("DOMContentLoaded", carregarRelatorio);
+  </script>
+
 </body>
 
 </html>
-
-.grafico-genero-container {
-    max-width: 600px;
-    margin: auto;
-}
-#graficoGenero {
-    width: 100% !important;
-    height: auto !important;
-}

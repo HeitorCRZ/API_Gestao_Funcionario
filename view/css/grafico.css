@@ -1,4 +1,121 @@
-#chartdiv {
-    width: 100%;
-    height: 500px;
+/* RESET E BASE */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* NAVBAR FIXA */
+.custom-navbar {
+  background-color: #1e3a8a;
+  height: 100px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 30px;
+  z-index: 1050;
+}
+
+.navbar-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* CONTAINER PRINCIPAL */
+.container {
+  max-width: 100%;
+  padding: 1rem;
+  padding-top: 120px; /* Espaço abaixo da navbar fixa */
+  left: 1rem;
+  top: 1.5rem;
+}
+
+/* TÍTULO APP (caso utilizado) */
+.app-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+}
+
+/* CARDS DE KPIs */
+.card {
+  border-radius: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card h6 {
+  font-size: 0.95rem;
+  color: #6c757d;
+}
+
+.card p {
+  font-size: 1.2rem;
+}
+
+/* SEÇÃO DE GRÁFICOS */
+.graficoOcorrencias {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow-x: auto; /* Rolagem horizontal se necessário */
+  margin-bottom: 2rem;
+}
+
+.graficoOcorrencias h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1e3a8a;
+  text-align: center;
+}
+
+/* GRÁFICOS AMCHARTS */
+#graficoSalarial,
+#graficoDepartamento {
+  width: 100% !important;
+  min-width: 700px; /* Força rolagem horizontal em telas menores */
+  height: 450px;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .navbar-title {
+    font-size: 1.5rem;
   }
+
+  .graficoOcorrencias h3 {
+    font-size: 1.4rem;
+  }
+
+  #graficoSalarial,
+  #graficoDepartamento {
+    height: 360px;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar-title {
+    font-size: 1.2rem;
+  }
+
+  .graficoOcorrencias {
+    padding: 1rem;
+  }
+
+  #graficoSalarial,
+  #graficoDepartamento {
+    height: 300px;
+  }
+
+  .card p {
+    font-size: 1.1rem;
+  }
+}

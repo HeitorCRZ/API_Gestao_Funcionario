@@ -1,14 +1,19 @@
+/* Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Corpo da Página */
 body {
     background-color: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
     padding-top: 120px; /* Espaço para a navbar fixa */
 }
 
+/* Navbar */
 .custom-navbar {
     background-color: #1e3a8a;
     height: 100px;
@@ -17,6 +22,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-title {
@@ -27,26 +33,143 @@ body {
     text-align: center;
 }
 
-.profile-card {
-    background-color: #fff;
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Botão de Fechar */
+.btn-close {
+    background: none;
+    border: none;
 }
 
+/* Cartão de Perfil */
+.profile-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Foto de Perfil */
 .profile-img {
     width: 150px;
     height: 150px;
     object-fit: cover;
     border-radius: 50%;
-    border: 3px solid #0d6efd;
+    border: 4px solid #0d6efd;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
 }
 
+.profile-img:hover {
+    transform: scale(1.05);
+}
+
+/* Texto Secundário */
 .text-muted {
     font-size: 1.1rem;
+    color: #6c757d !important;
 }
 
+/* Parágrafos */
 p {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
     font-size: 1.05rem;
+}
+
+/* Histórico de Cargos */
+#historico-cargos {
+    list-style: none;
+    padding-left: 0;
+}
+
+#historico-cargos li {
+    background-color: #f1f3f5;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.3s;
+}
+
+#historico-cargos li:hover {
+    background-color: #e2e6ea;
+}
+
+#historico-cargos li::before {
+    content: "🔄";
+    font-size: 1.3rem;
+}
+
+/* Tipos de eventos */
+#historico-cargos li.promocao::before {
+    content: "⬆️"; /* Promoção */
+}
+
+#historico-cargos li.mudanca::before {
+    content: "🔄"; /* Mudança */
+}
+
+#historico-cargos li.admissao::before {
+    content: "✅"; /* Admissão */
+}
+
+#historico-cargos li.demissao::before {
+    content: "❌"; /* Demissão */
+}
+
+/* Cores específicas */
+#historico-cargos li.promocao {
+    background-color: #e0f7e9; /* Verde claro */
+    border: 1px solid #34c38f;
+}
+
+#historico-cargos li.admissao {
+    background-color: #e6f0ff; /* Azul claro */
+    border: 1px solid #0d6efd;
+}
+
+#historico-cargos li.demissao {
+    background-color: #ffe6e6; /* Vermelho claro */
+    border: 1px solid #f46a6a;
+}
+
+/* Texto no histórico */
+#historico-cargos strong {
+    color: #1e3a8a;
+}
+
+#historico-cargos small {
+    color: #6c757d;
+}
+
+/* Título do Histórico */
+h5 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1e3a8a;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .navbar-title {
+        font-size: 2rem;
+    }
+
+    .profile-card {
+        padding: 20px;
+    }
+
+    .profile-img {
+        width: 120px;
+        height: 120px;
+    }
 }

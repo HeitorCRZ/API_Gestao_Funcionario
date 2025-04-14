@@ -4,6 +4,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const { parse } = require('csv-parse/sync');
+const TokenJWT = require("../model/meuTokenJWT");
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -18,19 +19,22 @@ module.exports = class MiddlewareFuncionario {
             const ext = path.extname(req.file.originalname).toLowerCase();
             const caminhoCompleto = path.resolve(req.file.path);
             const conteudo = await fs.promises.readFile(caminhoCompleto, 'utf8');
+
             if (ext === '.json') {
               req.body = JSON.parse(conteudo);
             } else if (ext === '.csv') {
               const registros = parse(conteudo, { columns: true, skip_empty_lines: true, trim: true });
               req.body = { funcionarios: registros };
-            } else
+            } else {
               return res.status(400).json({ msg: 'Formato de arquivo não suportado (apenas .json ou .csv)' });
+            }
           }
 
-          if (!req.body || (!req.body.funcionarios && Object.keys(req.body).length === 0))
+          if (!req.body || (!req.body.funcionarios && Object.keys(req.body).length === 0)) {
             return res.status(400).json({ msg: 'Nenhum dado de funcionário foi fornecido' });
+          }
 
-          next();
+          return next();
         } catch (err) {
           console.error(err);
           return res.status(500).json({ msg: 'Erro ao processar o arquivo ou JSON/CSV', erro: err.message });
@@ -39,6 +43,18 @@ module.exports = class MiddlewareFuncionario {
     ];
   }
 
+  validar_autenticacao = async (req, res, next) => {
+    const objToken = new TokenJWT()
+    const headers = req.headers['authorization']; // certo: tudo minúsculo
+    if (objToken.validarToken(headers) == true) {
+      next();
+      return
+    }
+    return res.status(400).json({
+      msg: "Token Invalido",
+      status: false
+    });
+  }
   validarNome = (req, res, next) => {
     const funcionarios = this.normalizarFuncionarios(req.body);
     for (let i = 0; i < funcionarios.length; i++) {

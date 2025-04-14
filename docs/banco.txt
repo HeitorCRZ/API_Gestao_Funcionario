@@ -40,8 +40,9 @@ CREATE TABLE historico_cargos (
   cargo_anterior VARCHAR(50),
   novo_cargo VARCHAR(50),
   data_alteracao DATE,
-  FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id)
+  FOREIGN KEY (funcionario_id) REFERENCES funcionarios(id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE supervisores (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,10 +60,13 @@ CREATE TABLE log_auditoria (
   valor_antigo TEXT,
   valor_novo TEXT,
   acao VARCHAR(10), -- INSERT, UPDATE, DELETE
-  usuario_responsavel INT NOT NULL,
+  usuario_responsavel INT, -- Removido NOT NULL
   data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (usuario_responsavel) REFERENCES funcionarios(id)
+  FOREIGN KEY (usuario_responsavel)
+    REFERENCES funcionarios(id)
+    ON DELETE SET NULL
 );
+
 
 DELIMITER //
 
@@ -78,5 +82,8 @@ END;
 //
 
 DELIMITER ;
+
+
+
 
 

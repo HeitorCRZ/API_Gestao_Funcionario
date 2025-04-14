@@ -96,7 +96,7 @@ module.exports = class Funcionario {
 
         const sql = `
             UPDATE funcionarios
-            SET nome = ?, email = ?, senha = md5(?), cpf = ?, cargo = ?, salario = ?, data_contratacao = ?, departamento_id = ?
+            SET nome = ?, cpf = ?, cargo = ?, salario = ?, data_contratacao = ?, departamento_id = ?
             WHERE id = ?
         `;
 
@@ -104,8 +104,6 @@ module.exports = class Funcionario {
         try {
             const [result] = await conexao.promise().execute(sql, [
                 this.nome,
-                this.email,
-                this.senha,
                 this.cpf,
                 this.cargo,
                 this.salario,

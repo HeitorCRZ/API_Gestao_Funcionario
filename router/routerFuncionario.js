@@ -21,6 +21,7 @@ module.exports = class RouterFuncionario {
         )
 
         this._router.post('/cadastrarCSV/:id',
+            this._middlewareFuncionario.validar_autenticacao,
             this._middlewareFuncionario.uploadJSON,
             this._middlewareFuncionario.validarNome,
             this._middlewareFuncionario.validarSenha,
@@ -34,6 +35,7 @@ module.exports = class RouterFuncionario {
             this._controleFuncionario.controle_csv_funcionario
         );
         this._router.post('/cadastrar',
+            this._middlewareFuncionario.validar_autenticacao,
             this._middlewareFuncionario.validarNome,
             this._middlewareFuncionario.validarSenha,
             this._middlewareFuncionario.validarEmail,
@@ -47,11 +49,10 @@ module.exports = class RouterFuncionario {
         );
 
         this._router.put('/atualizar/:id',
+            this._middlewareFuncionario.validar_autenticacao,
             this._middlewareFuncionario.validarIdFuncionario,
             this._middlewareFuncionario.validarNome,
-            this._middlewareFuncionario.validarSenha,
             this._middlewareFuncionario.verificarEmailCadastrado,
-            this._middlewareFuncionario.validarEmail,
             this._middlewareFuncionario.validarCargo,
             this._middlewareFuncionario.validarDepartamento_id,
             this._middlewareFuncionario.validarCPF,
@@ -61,6 +62,7 @@ module.exports = class RouterFuncionario {
         );
 
         this._router.delete('/deletar/:id',
+            this._middlewareFuncionario.validar_autenticacao,
             this._middlewareFuncionario.validarIdFuncionario,
             this._controleFuncionario.controle_funcionario_deletar
         );
@@ -71,14 +73,17 @@ module.exports = class RouterFuncionario {
         );
 
         this._router.get('/buscar',
+            this._middlewareFuncionario.validar_autenticacao,
             this._controleFuncionario.controle_funcionario_todos
         );
 
         this._router.get('/buscarPagina/:id',
+            this._middlewareFuncionario.validar_autenticacao,
             this._controleFuncionario.controle_funcionario_readPage
         ); 
 
-        this._router.get('/relatorio',
+        this._router.get('/relatorios',
+            this._middlewareFuncionario.validar_autenticacao,
             this._controleFuncionario.controle_funcionario_dadosRelatorio
         );
         return this._router

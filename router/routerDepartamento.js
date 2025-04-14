@@ -12,7 +12,8 @@ module.exports = class RouterDepartamento {
 
     criarRotasDepartamento() {
 
-        this._router.post('/cadastrarCSV/:id',   
+        this._router.post('/cadastrarCSV/:id',
+            this._middlewareDepartamento.validar_autenticacao,   
             this._middlewareDepartamento.uploadJSON, 
             this._middlewareDepartamento.verificarDepartamentoCadastrado,     
             this._middlewareDepartamento.validarNome,                       
@@ -22,7 +23,8 @@ module.exports = class RouterDepartamento {
             this._controleDepartamento.controle_csv_departamento  
         );
        
-        this._router.post('/cadastrar',   
+        this._router.post('/cadastrar',
+            this._middlewareDepartamento.validar_autenticacao,     
             this._middlewareDepartamento.verificarDepartamentoCadastrado,     
             this._middlewareDepartamento.validarNome,                       
             this._middlewareDepartamento.validarOrcamento,                   
@@ -32,6 +34,7 @@ module.exports = class RouterDepartamento {
         );
 
         this._router.put('/atualizar/:id',
+            this._middlewareDepartamento.validar_autenticacao,  
             this._middlewareDepartamento.validarIdDepartamento,
             this._middlewareDepartamento.verificarDepartamentoCadastrado,     
             this._middlewareDepartamento.validarNome,                       
@@ -41,6 +44,7 @@ module.exports = class RouterDepartamento {
             this._controleDepartamento.controle_departamento_atualizar
         );
         this._router.delete('/deletar/:id',
+            this._middlewareDepartamento.validar_autenticacao,  
             this._middlewareDepartamento.validarIdDepartamento,
             this._controleDepartamento.controle_departamento_deletar
         );
@@ -52,6 +56,7 @@ module.exports = class RouterDepartamento {
             this._controleDepartamento.controle_departamento_todos
         );
         this._router.get('/buscarPagina/:id',
+            this._middlewareDepartamento.validar_autenticacao,  
             this._controleDepartamento.controle_departamento_readPage
         );     
         

@@ -1,0 +1,11 @@
+nome,email,senha,cpf,cargo,salario,data_contratacao,departamento_id
+Bruno,bruno.lima@email.com,zxc987,234.567.890-12,engenheiro,6700,2023-10-10,1
+Renata,renata.silva@email.com,ren456,345.678.901-23,diretora,9200,2021-04-22,2
+Eduardo,edu.souza@email.com,senha789,456.890.123-34,programador,7100,2023-02-18,1
+Camila,camila.m@email.com,abc321,567.901.234-45,uxdesigner,5600,2021-11-05,3
+Felipe,felipe.alves@email.com,felipe23,678.012.345-56,suporte,4200,2024-01-25,4
+Tatiane,tatiane@email.com,tat@123,789.123.456-67,analista,6400,2023-07-14,1
+Marcos,marcos.pereira@email.com,marcos@987,890.234.567-78,coordenador,9300,2020-07-01,2
+Beatriz,bea.moraes@email.com,bea456,901.345.678-89,dev_frontend,7500,2022-08-09,3
+Rafael,rafael@email.com,rafa2024,012.456.789-90,estagiario,2100,2024-03-15,4
+Isabela,isabela.lopes@email.com,isa789,123.567.890-01,analista,6600,2023-12-03,1
