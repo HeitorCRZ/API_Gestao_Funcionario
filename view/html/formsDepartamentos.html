@@ -430,7 +430,7 @@
             }).then(res => res.json())
                 .then(data => {
                     if (!data.status) {
-                        mensage_error_arquivo.textContent = "enviado";
+                        mensage_error_arquivo.textContent = "enviado    ";
                         mensage_error_arquivo.style.display = "block";
                         return;
                     }

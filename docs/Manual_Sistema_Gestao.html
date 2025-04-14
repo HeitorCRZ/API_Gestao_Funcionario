@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual de Uso - Sistema de Gestão de Funcionários</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+        h1, h2 { color: #2c3e50; }
+        h1 { text-align: center; }
+        h2 { background-color: #dceeff; padding: 8px; }
+        ul { margin-top: 0; }
+        code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Manual de Uso do Sistema de Gestão De Funcionários</h1>
+
+    <h2>Instalação das Dependências</h2>
+    <p>Execute o comando abaixo no terminal para instalar todas as dependências e extensões necessárias:</p>
+    <code>npm install express mysql multer jsonwebtoken --save-dev nodemon csv-parse axios</code>
+
+    <h2>Iniciando a Aplicação</h2>
+    <p>Para iniciar o sistema, utilize o comando:</p>
+    <code>npx nodemon app.js</code>
+
+    <h2>Acesso ao Sistema</h2>
+    <p>Acesse a rota inicial no navegador:</p>
+    <code>http://localhost:3000/html/login.html</code>
+
+    <h2>Conta Padrão (Administrador)</h2>
+    <p>O banco de dados já possui um departamento e um usuário previamente inseridos:(SQL do banco no arquivo banco.txt na pasta docs)</p>
+    <ul>
+        <li><strong>Departamento:</strong> Administração</li>
+        <li><strong>Email:</strong> admin@empresa.com</li>
+        <li><strong>Senha:</strong> 123</li>
+    </ul>
+
+    <h2>Perspectivas de Usuário</h2>
+
+    <h3>Funcionário</h3>
+    <ul>
+        <li>Acesso: Apenas login (não pode se cadastrar).</li>
+        <li>Cadastro de Perfil: Após o login, deve preencher:
+            <ul>
+                <li>Foto de perfil</li>
+                <li>Dados pessoais</li>
+            </ul>
+        </li>
+        <li>Acesso às Informações: Direcionado à página com suas informações dentro da empresa.</li>
+    </ul>
+
+    <h3>Administrador</h3>
+    <ul>
+        <li>Acesso completo ao sistema.</li>
+        <li>Funcionalidades:
+            <ul>
+                <li>Gestão de Funcionários</li>
+                <li>Gestão de Departamentos</li>
+                <li>Visualização de Gráficos e Dashboards</li>
+                <li>Acesso aos Logs do Sistema</li>
+                <li>Cadastro rápido via arquivos <code>.csv</code></li>
+                <li>Atualização de dados</li>
+                <li>Filtros de busca por nome, cargo e departamento</li>
+                <li>Visualização dos perfis dos funcionários</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Dashboards e Gráficos</h2>
+    <p>Na tela inicial do administrador são exibidos:</p>
+    <ul>
+        <li>Painéis informativos (dashboards)</li>
+        <li>Quatro botões principais:
+            <ul>
+                <li>Gestão de Funcionários</li>
+                <li>Gestão de Departamentos</li>
+                <li>Gráficos</li>
+                <li>Logs</li>
+            </ul>
+        </li>
+    </ul>
+    <p><strong>Gráficos disponíveis:</strong></p>
+    <ul>
+        <li>Distribuição salarial por departamento</li>
+        <li>Idade média por departamento</li>
+    </ul>
+</body>
+</html>

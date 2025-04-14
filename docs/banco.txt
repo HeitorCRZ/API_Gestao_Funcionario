@@ -83,6 +83,8 @@ END;
 
 DELIMITER ;
 
+INSERT INTO `sistema_gerenciamento_funcionarios`.`departamentos` (`id`, `nome`, `orcamento`, `localizacao`, `data_criacao`) VALUES ('1', 'Adminitração', '10000', '01001-000', '2023-07-23');
+INSERT INTO `sistema_gerenciamento_funcionarios`.`funcionarios` (`nome`, `email`, `cpf`, `senha`, `salario`, `data_contratacao`, `departamento_id`, `cargo`) VALUES ( 'ADMIN', 'admin@empresa.com', '000000', md5(123), '1000', '2000-01-01', '1', 'Administração');
 
 
 
