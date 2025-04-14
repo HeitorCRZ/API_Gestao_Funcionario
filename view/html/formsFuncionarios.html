@@ -542,10 +542,6 @@
             cadastro_funcionario_arquivo();
         });
 
-
-
-
-
         function cadastro_funcionario_arquivo() {
             const inputArquivo = document.getElementById("variavelArquivo");
             if (!inputArquivo || !inputArquivo.files || inputArquivo.files.length === 0) {
@@ -629,9 +625,9 @@
                     console.log(data);
 
                     if (data.status === false) {
-                        mensagem.textContent = "Arquivo enviado";
+                        mensagem.textContent = data.msg;
                         mensagem.style.display = "block";
-                        mensagem.style.color = "blue";
+                        mensagem.style.color = "red";
                     } else {
                         mensagem.textContent = "Funcionário cadastrado com sucesso!";
                         mensagem.style.display = "block";

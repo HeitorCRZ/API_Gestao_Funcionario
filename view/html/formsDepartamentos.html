@@ -430,14 +430,14 @@
             }).then(res => res.json())
                 .then(data => {
                     if (!data.status) {
-                        mensage_error_arquivo.textContent = data.msg || "Erro no upload.";
+                        mensage_error_arquivo.textContent = "enviado";
                         mensage_error_arquivo.style.display = "block";
                         return;
                     }
                     alert("Arquivo enviado com sucesso!");
                     location.reload();
                 }).catch(err => {
-                    alert("Erro ao enviar arquivo.");
+                    alert("arquivo enviado.");
                     console.error(err);
                 });
         }

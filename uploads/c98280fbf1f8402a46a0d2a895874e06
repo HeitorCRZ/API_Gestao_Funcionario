@@ -1,0 +1,11 @@
+nome,email,senha,cpf,cargo,salario,data_contratacao,departamento_id
+Lucas,lucas.martins@email.com,luc456,345.678.912-10,analista,6100,2023-06-19,1
+Patrícia,patricia.lima@email.com,pat789,456.789.123-45,gerente,8700,2022-03-12,2
+Diego,diego.santos@email.com,dg2024,567.891.234-56,desenvolvedor,7200,2023-02-01,1
+Marina,marina.ferreira@email.com,mar!456,678.912.345-67,designer,5800,2021-10-05,3
+Rogério,rogerio.costa@email.com,rog@123,789.123.456-88,suporte,4100,2024-01-18,4
+Letícia,leticia.campos@email.com,let2023,890.234.567-99,analista,6250,2023-09-03,1
+André,andre.almeida@email.com,andre321,901.345.678-10,coordenador,9400,2020-05-25,2
+Natália,natalia.souza@email.com,nat456,012.456.789-21,desenvolvedor,7350,2022-10-11,3
+Henrique,henrique.oliveira@email.com,hen123,123.567.890-32,estagiario,2050,2024-02-29,4
+Sabrina,sabrina.moraes@email.com,sab@789,234.678.901-43,analista,6450,2023-12-15,1
